@@ -1,0 +1,368 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Role {
+  SUPER_ADMIN
+  SEO_MANAGER
+  CONTENT_MANAGER
+  SALES_MANAGER
+  SALES_USER
+  PROJECT_MANAGER
+  EDITOR
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  SITE_VISIT
+  QUOTATION_SENT
+  NEGOTIATION
+  WON
+  LOST
+  SPAM_INVALID
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         Role          @default(EDITOR)
+  isActive     Boolean       @default(true)
+  leads        Lead[]        @relation("LeadAssignee")
+  activities   ActivityLog[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model SeoMetadata {
+  id             String         @id @default(cuid())
+  title          String?
+  description    String?
+  canonicalUrl   String?
+  robotsIndex    Boolean        @default(true)
+  robotsFollow   Boolean        @default(true)
+  openGraphTitle String?
+  openGraphDesc  String?
+  openGraphImage String?
+  schemaType     String?
+  products       Product[]
+  sports         Sport[]
+  services       Service[]
+  industries     Industry[]
+  projects       Project[]
+  caseStudies    CaseStudy[]
+  posts          BlogPost[]
+  resources      Resource[]
+  pages          Page[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model MediaAsset {
+  id          String        @id @default(cuid())
+  title       String
+  altText     String?
+  caption     String?
+  url         String
+  mimeType    String
+  sizeBytes   Int?
+  width       Int?
+  height      Int?
+  category    String?
+  products    Product[]     @relation("ProductGallery")
+  projects    Project[]     @relation("ProjectGallery")
+  resources   Resource[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model ProductCategory {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?
+  products    Product[]
+  status      PublishStatus   @default(DRAFT)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model Product {
+  id              String                 @id @default(cuid())
+  name            String
+  slug            String                 @unique
+  sku             String?
+  shortDescription String?
+  fullDescription  String?
+  categoryId      String?
+  category        ProductCategory?       @relation(fields: [categoryId], references: [id])
+  mainImageUrl    String?
+  gallery         MediaAsset[]           @relation("ProductGallery")
+  specifications  ProductSpecification[]
+  sports          Sport[]                @relation("ProductSports")
+  services        Service[]              @relation("ProductServices")
+  projects        Project[]              @relation("ProjectProducts")
+  caseStudies     CaseStudy[]            @relation("CaseStudyProducts")
+  blogs           BlogPost[]             @relation("BlogProducts")
+  resources       Resource[]             @relation("ResourceProducts")
+  faqs            FAQ[]                  @relation("ProductFaqs")
+  seoId           String?
+  seo             SeoMetadata?           @relation(fields: [seoId], references: [id])
+  status          PublishStatus          @default(DRAFT)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+}
+
+model ProductSpecification {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  value     String
+  unit      String?
+  order     Int      @default(0)
+}
+
+model Sport {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  shortDescription String?
+  longDescription  String?
+  heroImageUrl String?
+  products    Product[]     @relation("ProductSports")
+  services    Service[]     @relation("SportServices")
+  projects    Project[]     @relation("ProjectSports")
+  caseStudies CaseStudy[]   @relation("CaseStudySports")
+  blogs       BlogPost[]    @relation("BlogSports")
+  resources   Resource[]    @relation("ResourceSports")
+  faqs        FAQ[]         @relation("SportFaqs")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Service {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  category    String?
+  shortDescription String?
+  fullDescription  String?
+  products    Product[]     @relation("ProductServices")
+  sports      Sport[]       @relation("SportServices")
+  industries  Industry[]    @relation("IndustryServices")
+  projects    Project[]     @relation("ProjectServices")
+  caseStudies CaseStudy[]   @relation("CaseStudyServices")
+  faqs        FAQ[]         @relation("ServiceFaqs")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Industry {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String?
+  services    Service[]     @relation("IndustryServices")
+  projects    Project[]     @relation("ProjectIndustries")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  client      String?
+  location    String?
+  city        String?
+  state       String?
+  country     String?
+  projectType String?
+  area        String?
+  completionDate DateTime?
+  description String?
+  challenge   String?
+  solution    String?
+  outcome     String?
+  sports      Sport[]       @relation("ProjectSports")
+  products    Product[]     @relation("ProjectProducts")
+  services    Service[]     @relation("ProjectServices")
+  industries  Industry[]    @relation("ProjectIndustries")
+  caseStudies CaseStudy[]   @relation("ProjectCaseStudies")
+  gallery     MediaAsset[]  @relation("ProjectGallery")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model CaseStudy {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  client      String?
+  challenge   String?
+  requirement String?
+  solution    String?
+  implementation String?
+  outcome     String?
+  projectId   String?
+  project     Project?      @relation("ProjectCaseStudies", fields: [projectId], references: [id])
+  products    Product[]     @relation("CaseStudyProducts")
+  sports      Sport[]       @relation("CaseStudySports")
+  services    Service[]     @relation("CaseStudyServices")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model BlogPost {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  excerpt     String?
+  content     String?
+  category    String?
+  tags        String?
+  publishedAt DateTime?
+  products    Product[]     @relation("BlogProducts")
+  sports      Sport[]       @relation("BlogSports")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Resource {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  category    String?
+  fileId      String?
+  file        MediaAsset?   @relation(fields: [fileId], references: [id])
+  accessType  String        @default("PUBLIC")
+  products    Product[]     @relation("ResourceProducts")
+  sports      Sport[]       @relation("ResourceSports")
+  seoId       String?
+  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model FAQ {
+  id        String        @id @default(cuid())
+  question  String
+  answer    String
+  category  String?
+  order     Int           @default(0)
+  products  Product[]     @relation("ProductFaqs")
+  sports    Sport[]       @relation("SportFaqs")
+  services  Service[]     @relation("ServiceFaqs")
+  status    PublishStatus @default(DRAFT)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Page {
+  id        String        @id @default(cuid())
+  title     String
+  slug      String        @unique
+  content   String?
+  blocks    String?
+  seoId     String?
+  seo       SeoMetadata?  @relation(fields: [seoId], references: [id])
+  status    PublishStatus @default(DRAFT)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model MenuItem {
+  id        String      @id @default(cuid())
+  label     String
+  url       String
+  parentId  String?
+  parent    MenuItem?   @relation("MenuTree", fields: [parentId], references: [id])
+  children  MenuItem[]  @relation("MenuTree")
+  order     Int         @default(0)
+  isActive  Boolean     @default(true)
+  isMega    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Lead {
+  id            String     @id @default(cuid())
+  type          String
+  firstName     String
+  lastName      String?
+  company       String?
+  designation   String?
+  mobile        String?
+  whatsapp      String?
+  email         String?
+  city          String?
+  state         String?
+  country       String?
+  interestJson  String?
+  projectJson   String?
+  attributionJson String?
+  message       String?
+  status        LeadStatus @default(NEW)
+  priority      String     @default("NORMAL")
+  assignedUserId String?
+  assignedUser  User?      @relation("LeadAssignee", fields: [assignedUserId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  module    String
+  recordId  String?
+  action    String
+  previousValue String?
+  newValue  String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model WebsiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  isSecret  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
