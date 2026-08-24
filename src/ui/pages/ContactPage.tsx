@@ -80,23 +80,23 @@ export function ContactPage() {
             <div className="form-grid">
               <label>
                 First name
-                <input name="firstName" required minLength={2} />
+                <input name="firstName" autoComplete="given-name" required minLength={2} />
               </label>
               <label>
                 Email
-                <input name="email" type="email" />
+                <input name="email" type="email" autoComplete="email" />
               </label>
               <label>
                 Mobile
-                <input name="mobile" />
+                <input name="mobile" type="tel" autoComplete="tel" />
               </label>
               <label>
                 Company
-                <input name="company" />
+                <input name="company" autoComplete="organization" />
               </label>
               <label>
                 City
-                <input name="city" />
+                <input name="city" autoComplete="address-level2" />
               </label>
               <label>
                 Project type
@@ -121,7 +121,7 @@ export function ContactPage() {
             </div>
             <label>
               Project requirement
-              <textarea name="message" rows={5} />
+              <textarea name="message" rows={5} placeholder="Sport mix, approximate area, location, timeline or constraints" />
             </label>
             {error ? <div className="form-error">{error}</div> : null}
             <button className="primary-action" type="submit" disabled={isSubmitting}>

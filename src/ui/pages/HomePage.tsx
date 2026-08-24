@@ -90,7 +90,7 @@ export function HomePage() {
         <div className="sport-grid">
           {sports.map((sport) => (
             <a className="sport-card" href="/sports" key={sport.name}>
-              <img src={sport.image} alt="" loading="lazy" />
+              <img src={sport.image} alt={`${sport.name} facility surface`} loading="lazy" />
               <span>{sport.name}</span>
               <p>{sport.copy}</p>
             </a>
@@ -102,7 +102,7 @@ export function HomePage() {
         <SectionHeader eyebrow="Featured products" title="Systems built for performance and daily durability" />
         <div className="card-grid product-grid">
           {products.map((product) => (
-            <Card key={product.name} label={product.category} title={product.name} copy={product.copy} image={product.image} />
+            <Card key={product.name} label={product.category} title={product.name} copy={product.copy} image={product.image} imageAlt={`${product.name} installation`} />
           ))}
         </div>
       </section>
@@ -178,7 +178,7 @@ export function HomePage() {
         <div className="project-layout">
           {projects.map((project) => (
             <article className="project-card" key={project.title}>
-              <img src={project.image} alt="" loading="lazy" />
+              <img src={project.image} alt={`${project.title} sports infrastructure project`} loading="lazy" />
               <div>
                 <span>{project.status}</span>
                 <h3>{project.title}</h3>

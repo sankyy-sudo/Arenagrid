@@ -3,12 +3,13 @@ type CardProps = {
   title: string;
   copy: string;
   image?: string;
+  imageAlt?: string;
 };
 
-export function Card({ label, title, copy, image }: CardProps) {
+export function Card({ label, title, copy, image, imageAlt }: CardProps) {
   return (
     <article className="content-card">
-      {image ? <img src={image} alt="" loading="lazy" /> : null}
+      {image ? <img src={image} alt={imageAlt ?? title} loading="lazy" /> : null}
       <span>{label}</span>
       <h3>{title}</h3>
       <p>{copy}</p>

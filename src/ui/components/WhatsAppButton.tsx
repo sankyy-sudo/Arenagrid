@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+import { FaWhatsapp } from 'react-icons/fa';
 
 export function WhatsAppButton() {
   const message = encodeURIComponent("Hello Arena Grid Infra, I would like to discuss a sports infrastructure project.");
@@ -11,7 +11,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noreferrer"
     >
-      <MessageCircle size={22} />
+      <FaWhatsapp size={22} />
     </a>
   );
 }

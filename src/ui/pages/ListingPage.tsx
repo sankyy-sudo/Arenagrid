@@ -82,7 +82,7 @@ export function ListingPage({ title, kind }: ListingPageProps) {
         <div className="listing-grid">
           {items.map((item) => (
             <article className="listing-card" key={item.title}>
-              {item.image ? <img src={item.image} alt="" loading="lazy" /> : null}
+              {item.image ? <img src={item.image} alt={item.title} loading="lazy" /> : null}
               <span>{item.label}</span>
               <h3>{item.title}</h3>
               <p>{item.copy}</p>
