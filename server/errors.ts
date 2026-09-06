@@ -23,6 +23,8 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
     response.status(error.statusCode).json({ error: error.message });
     return;
   }
-
+   
+  console.error(error);
+// response.status(500).json({ error: "Unexpected server error" });
   response.status(500).json({ error: "Unexpected server error" });
 };

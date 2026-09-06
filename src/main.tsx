@@ -5,6 +5,7 @@ import { App } from "./ui/App";
 import { HomePage } from "./ui/pages/HomePage";
 import { ListingPage } from "./ui/pages/ListingPage";
 import { ContactPage } from "./ui/pages/ContactPage";
+import { adminRoutes } from "./admin/routes";
 import "./styles.css";
 
 const router = createBrowserRouter([
@@ -25,7 +26,8 @@ const router = createBrowserRouter([
       { path: "gallery", element: <ListingPage title="Gallery" kind="Media library" /> },
       { path: "contact", element: <ContactPage /> }
     ]
-  }
+  },
+  ...adminRoutes
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

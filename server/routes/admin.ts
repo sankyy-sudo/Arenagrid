@@ -1,47 +1,31 @@
 import { Router } from "express";
-import { requireRole } from "../middleware/auth";
+import { requireAuth, requireRole } from "../middleware/auth";
 import { prisma } from "../db";
-import { productCreateSchema } from "../../shared/validation";
+import { mountResourceRouters } from "../resources";
+import { usersRouter } from "./users";
+import { mediaRouter } from "./media";
 
 export const adminRouter = Router();
 
+// Every route below this line requires a valid session.
+adminRouter.use(requireAuth);
+
 adminRouter.get(
   "/dashboard",
-  requireRole(["SUPER_ADMIN", "SALES_MANAGER", "CONTENT_MANAGER", "SEO_MANAGER"]),
+  requireRole(["SUPER_ADMIN", "SALES_MANAGER", "CONTENT_MANAGER", "SEO_MANAGER", "PROJECT_MANAGER"]),
   async (_request, response) => {
-    const [leadCount, productCount, projectCount] = await Promise.all([
+    const [leadCount, productCount, projectCount, newLeadCount, mediaCount] = await Promise.all([
       prisma.lead.count(),
       prisma.product.count(),
-      prisma.project.count()
+      prisma.project.count(),
+      prisma.lead.count({ where: { status: "NEW" } }),
+      prisma.mediaAsset.count()
     ]);
 
-    response.json({ leadCount, productCount, projectCount });
+    response.json({ leadCount, productCount, projectCount, newLeadCount, mediaCount });
   }
 );
 
-adminRouter.get("/products", requireRole(["SUPER_ADMIN", "CONTENT_MANAGER", "EDITOR"]), async (_request, response) => {
-  const products = await prisma.product.findMany({
-    include: { category: true, specifications: true },
-    orderBy: { updatedAt: "desc" }
-  });
-
-  response.json({ products });
-});
-
-adminRouter.post("/products", requireRole(["SUPER_ADMIN", "CONTENT_MANAGER"]), async (request, response) => {
-  const data = productCreateSchema.parse(request.body);
-  const product = await prisma.product.create({
-    data: {
-      name: data.name,
-      slug: data.slug,
-      sku: data.sku,
-      shortDescription: data.shortDescription,
-      fullDescription: data.fullDescription,
-      categoryId: data.categoryId,
-      specifications: { create: data.specifications }
-    },
-    include: { specifications: true }
-  });
-
-  response.status(201).json({ product });
-});
+adminRouter.use("/users", usersRouter);
+adminRouter.use("/media", mediaRouter);
+mountResourceRouters(adminRouter);
