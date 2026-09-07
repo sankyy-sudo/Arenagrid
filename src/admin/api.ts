@@ -1,4 +1,4 @@
-const API_BASE = "/api/admin";
+const API_BASE = `${import.meta.env.VITE_API_URL}/api/admin`;
 
 export class ApiClientError extends Error {
   constructor(
