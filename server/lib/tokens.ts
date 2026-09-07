@@ -23,8 +23,8 @@ export function verifySession(token: string): SessionPayload {
 export function sessionCookieOptions() {
   return {
     httpOnly: true,
-    sameSite: "lax" as const,
-    secure: env.NODE_ENV === "production",
+    sameSite: "none" as const,
+    secure: true,
     maxAge: env.ADMIN_SESSION_MINUTES * 60 * 1000,
     path: "/"
   };
@@ -33,8 +33,8 @@ export function sessionCookieOptions() {
 export function csrfCookieOptions() {
   return {
     httpOnly: false,
-    sameSite: "lax" as const,
-    secure: env.NODE_ENV === "production",
+    sameSite: "none" as const,
+    secure: true,
     maxAge: env.ADMIN_SESSION_MINUTES * 60 * 1000,
     path: "/"
   };
