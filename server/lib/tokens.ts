@@ -21,20 +21,24 @@ export function verifySession(token: string): SessionPayload {
 }
 
 export function sessionCookieOptions() {
+  const isProduction = env.NODE_ENV === "production";
+
   return {
     httpOnly: true,
-    sameSite: "none" as const,
-    secure: true,
+    sameSite: isProduction ? "none" as const : "lax" as const,
+    secure: isProduction,
     maxAge: env.ADMIN_SESSION_MINUTES * 60 * 1000,
     path: "/"
   };
 }
 
 export function csrfCookieOptions() {
+  const isProduction = env.NODE_ENV === "production";
+
   return {
     httpOnly: false,
-    sameSite: "none" as const,
-    secure: true,
+    sameSite: isProduction ? "none" as const : "lax" as const,
+    secure: isProduction,
     maxAge: env.ADMIN_SESSION_MINUTES * 60 * 1000,
     path: "/"
   };
