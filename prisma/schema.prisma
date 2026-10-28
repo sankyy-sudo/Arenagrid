@@ -66,7 +66,6 @@ model SeoMetadata {
   projects       Project[]
   caseStudies    CaseStudy[]
   posts          BlogPost[]
-  resources      Resource[]
   pages          Page[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -85,7 +84,6 @@ model MediaAsset {
   category    String?
   products    Product[]     @relation("ProductGallery")
   projects    Project[]     @relation("ProjectGallery")
-  resources   Resource[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -105,12 +103,13 @@ model Product {
   id              String                 @id @default(cuid())
   name            String
   slug            String                 @unique
-  sku             String?
   shortDescription String?
   fullDescription  String?
   categoryId      String?
   category        ProductCategory?       @relation(fields: [categoryId], references: [id])
   mainImageUrl    String?
+    features        String[]               @default([])
+    bestFor         String[]               @default([])
   gallery         MediaAsset[]           @relation("ProductGallery")
   specifications  ProductSpecification[]
   sports          Sport[]                @relation("ProductSports")
@@ -118,7 +117,6 @@ model Product {
   projects        Project[]              @relation("ProjectProducts")
   caseStudies     CaseStudy[]            @relation("CaseStudyProducts")
   blogs           BlogPost[]             @relation("BlogProducts")
-  resources       Resource[]             @relation("ResourceProducts")
   faqs            FAQ[]                  @relation("ProductFaqs")
   seoId           String?
   seo             SeoMetadata?           @relation(fields: [seoId], references: [id])
@@ -149,7 +147,6 @@ model Sport {
   projects    Project[]     @relation("ProjectSports")
   caseStudies CaseStudy[]   @relation("CaseStudySports")
   blogs       BlogPost[]    @relation("BlogSports")
-  resources   Resource[]    @relation("ResourceSports")
   faqs        FAQ[]         @relation("SportFaqs")
   seoId       String?
   seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
@@ -183,6 +180,8 @@ model Industry {
   name        String
   slug        String        @unique
   description String?
+  imageUrl    String?
+  solution    String?
   services    Service[]     @relation("IndustryServices")
   projects    Project[]     @relation("ProjectIndustries")
   seoId       String?
@@ -204,6 +203,9 @@ model Project {
   projectType String?
   area        String?
   completionDate DateTime?
+  beforeImageUrl String?
+  afterImageUrl  String?
+  progress       Int           @default(0)
   description String?
   challenge   String?
   solution    String?
@@ -254,24 +256,6 @@ model BlogPost {
   publishedAt DateTime?
   products    Product[]     @relation("BlogProducts")
   sports      Sport[]       @relation("BlogSports")
-  seoId       String?
-  seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
-  status      PublishStatus @default(DRAFT)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-}
-
-model Resource {
-  id          String        @id @default(cuid())
-  title       String
-  slug        String        @unique
-  description String?
-  category    String?
-  fileId      String?
-  file        MediaAsset?   @relation(fields: [fileId], references: [id])
-  accessType  String        @default("PUBLIC")
-  products    Product[]     @relation("ResourceProducts")
-  sports      Sport[]       @relation("ResourceSports")
   seoId       String?
   seo         SeoMetadata?  @relation(fields: [seoId], references: [id])
   status      PublishStatus @default(DRAFT)

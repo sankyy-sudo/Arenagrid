@@ -41,14 +41,23 @@ const idArray = z.array(z.string()).optional();
 const optionalId = z.string().nullable().optional();
 const shortText = (max: number) => z.string().max(max).optional();
 
+// Accept local media paths or explicit HTTP(S) URLs; allow clearing an image.
+export const productImageSchema = z.string().max(2000).refine(value => {
+  if (value === "") return true;
+  if (/^\/(uploads|images)\/[a-zA-Z0-9_./%-]+$/.test(value) && !value.includes("..")) return true;
+  try { const url = new URL(value); return ["http:", "https:"].includes(url.protocol) && !url.username && !url.password; }
+  catch { return false; }
+}, "Use an uploaded image, /images/ path or HTTP(S) image URL.").nullable().optional();
+
 export const productCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
-  sku: z.string().max(80).optional(),
-  shortDescription: z.string().max(300).optional(),
-  fullDescription: z.string().optional(),
+  shortDescription: z.string().max(300).nullish(),
+  fullDescription: z.string().nullish(),
   categoryId: optionalId,
-  mainImageUrl: z.string().url().optional(),
+  mainImageUrl: productImageSchema,
+  features: z.array(z.string().trim().min(1).max(400)).max(20).optional(),
+  bestFor: z.array(z.string().trim().min(1).max(160)).max(30).optional(),
   status: publishStatusSchema.default("DRAFT"),
   sportIds: idArray,
   serviceIds: idArray,
@@ -58,12 +67,15 @@ export const productCreateSchema = z.object({
       z.object({
         name: z.string().min(1).max(80),
         value: z.string().min(1).max(400),
-        unit: z.string().max(40).optional()
+        unit: z.string().max(40).nullish()
       })
     )
     .default([])
 });
-export const productUpdateSchema = productCreateSchema.partial();
+export const productUpdateSchema = productCreateSchema.partial().extend({
+  status: publishStatusSchema.optional(),
+  specifications: productCreateSchema.shape.specifications.removeDefault().optional()
+});
 
 export const productCategoryCreateSchema = z.object({
   name: z.string().min(2).max(160),
@@ -71,19 +83,19 @@ export const productCategoryCreateSchema = z.object({
   description: shortText(500),
   status: publishStatusSchema.default("DRAFT")
 });
-export const productCategoryUpdateSchema = productCategoryCreateSchema.partial();
+export const productCategoryUpdateSchema = productCategoryCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const sportCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
   shortDescription: shortText(300),
-  longDescription: z.string().optional(),
-  heroImageUrl: z.string().url().optional(),
+  longDescription: z.string().nullish(),
+  heroImageUrl: productImageSchema,
   status: publishStatusSchema.default("DRAFT"),
   productIds: idArray,
   serviceIds: idArray
 });
-export const sportUpdateSchema = sportCreateSchema.partial();
+export const sportUpdateSchema = sportCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const serviceCreateSchema = z.object({
   name: z.string().min(2).max(160),
@@ -96,29 +108,34 @@ export const serviceCreateSchema = z.object({
   sportIds: idArray,
   industryIds: idArray
 });
-export const serviceUpdateSchema = serviceCreateSchema.partial();
+export const serviceUpdateSchema = serviceCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const industryCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
-  description: shortText(500),
+  description: z.string().max(10000).nullish(),
+  imageUrl: productImageSchema,
+  solution: z.string().max(10000).nullish(),
   status: publishStatusSchema.default("DRAFT"),
   serviceIds: idArray
 });
-export const industryUpdateSchema = industryCreateSchema.partial();
+export const industryUpdateSchema = industryCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const projectCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
   client: shortText(160),
-  location: shortText(160),
+  location: z.string().max(160).nullish(),
   city: shortText(80),
   state: shortText(80),
   country: shortText(80),
   projectType: shortText(80),
   area: shortText(80),
   completionDate: z.string().datetime().optional(),
-  description: z.string().optional(),
+  description: z.string().nullish(),
+  beforeImageUrl: productImageSchema,
+  afterImageUrl: productImageSchema,
+  progress: z.union([z.literal(0), z.literal(100)]).optional(),
   challenge: z.string().optional(),
   solution: z.string().optional(),
   outcome: z.string().optional(),
@@ -129,7 +146,7 @@ export const projectCreateSchema = z.object({
   industryIds: idArray,
   galleryIds: idArray
 });
-export const projectUpdateSchema = projectCreateSchema.partial();
+export const projectUpdateSchema = projectCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const caseStudyCreateSchema = z.object({
   title: z.string().min(2).max(200),
@@ -146,7 +163,7 @@ export const caseStudyCreateSchema = z.object({
   sportIds: idArray,
   serviceIds: idArray
 });
-export const caseStudyUpdateSchema = caseStudyCreateSchema.partial();
+export const caseStudyUpdateSchema = caseStudyCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const blogPostCreateSchema = z.object({
   title: z.string().min(2).max(200),
@@ -160,20 +177,7 @@ export const blogPostCreateSchema = z.object({
   productIds: idArray,
   sportIds: idArray
 });
-export const blogPostUpdateSchema = blogPostCreateSchema.partial();
-
-export const resourceCreateSchema = z.object({
-  title: z.string().min(2).max(200),
-  slug: slugSchema,
-  description: shortText(500),
-  category: shortText(120),
-  fileId: optionalId,
-  accessType: z.enum(["PUBLIC", "GATED"]).default("PUBLIC"),
-  status: publishStatusSchema.default("DRAFT"),
-  productIds: idArray,
-  sportIds: idArray
-});
-export const resourceUpdateSchema = resourceCreateSchema.partial();
+export const blogPostUpdateSchema = blogPostCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const faqCreateSchema = z.object({
   question: z.string().min(2).max(300),
@@ -185,7 +189,10 @@ export const faqCreateSchema = z.object({
   sportIds: idArray,
   serviceIds: idArray
 });
-export const faqUpdateSchema = faqCreateSchema.partial();
+export const faqUpdateSchema = faqCreateSchema.partial().extend({
+  status: publishStatusSchema.optional(),
+  order: faqCreateSchema.shape.order.removeDefault().optional()
+});
 
 export const pageCreateSchema = z.object({
   title: z.string().min(2).max(200),
@@ -194,7 +201,7 @@ export const pageCreateSchema = z.object({
   blocks: z.string().optional(),
   status: publishStatusSchema.default("DRAFT")
 });
-export const pageUpdateSchema = pageCreateSchema.partial();
+export const pageUpdateSchema = pageCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
 
 export const menuItemCreateSchema = z.object({
   label: z.string().min(1).max(120),
@@ -204,7 +211,11 @@ export const menuItemCreateSchema = z.object({
   isActive: z.boolean().default(true),
   isMega: z.boolean().default(false)
 });
-export const menuItemUpdateSchema = menuItemCreateSchema.partial();
+export const menuItemUpdateSchema = menuItemCreateSchema.partial().extend({
+  order: menuItemCreateSchema.shape.order.removeDefault().optional(),
+  isActive: menuItemCreateSchema.shape.isActive.removeDefault().optional(),
+  isMega: menuItemCreateSchema.shape.isMega.removeDefault().optional()
+});
 
 export const userCreateSchema = z.object({
   name: z.string().min(2).max(160),

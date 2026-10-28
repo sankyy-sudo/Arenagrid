@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { adminApi, ApiClientError } from "../api";
+import { useCallback, useEffect, useState } from "react";
+import { adminApi, ApiClientError } from "../services/api";
 
 interface Lead {
   id: string;
@@ -33,7 +33,7 @@ export function LeadsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  function load() {
+  const load = useCallback(() => {
     setLoading(true);
     const search = query ? `?q=${encodeURIComponent(query)}` : "";
     adminApi
@@ -41,9 +41,9 @@ export function LeadsPage() {
       .then((res) => setLeads(res.items))
       .catch((err) => setError(err instanceof ApiClientError ? err.message : "Failed to load leads."))
       .finally(() => setLoading(false));
-  }
+  }, [query]);
 
-  useEffect(load, [query]);
+  useEffect(load, [load]);
 
   async function updateStatus(lead: Lead, status: string) {
     setLeads((prev) => prev.map((l) => (l.id === lead.id ? { ...l, status } : l)));

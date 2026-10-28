@@ -133,32 +133,7 @@ export const industries = [
   { name: "Hotels & Hospitality", icon: Handshake, copy: "Guest-facing courts and leisure sports destinations." }
 ];
 
-export const projects = [
-  {
-    title: "Northline International School",
-    location: "Gurugram, Haryana",
-    sport: "Football / Basketball / Athletics",
-    type: "Campus Sports Masterplan",
-    status: "Completed",
-    image: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?auto=format&fit=crop&w=1200&q=80"
-  },
-  {
-    title: "Cedar Sports Academy",
-    location: "Pune, Maharashtra",
-    sport: "Tennis / Padel / Pickleball",
-    type: "Academy Expansion",
-    status: "In Handover",
-    image: "https://images.unsplash.com/photo-1599474924187-334a4ae5bd3c?auto=format&fit=crop&w=1200&q=80"
-  },
-  {
-    title: "Verdant Heights Community",
-    location: "Bengaluru, Karnataka",
-    sport: "Multi-Sport / Play Area",
-    type: "Residential Amenity",
-    status: "Completed",
-    image: "https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=1200&q=80"
-  }
-];
+export const projects: { title: string; location: string; sport: string; type: string; status: string; image: string }[] = [];
 
 export const capabilityCards = [
   { title: "Premium Quality", icon: Award, copy: "Specified systems, disciplined installation and clear handover standards." },
@@ -167,17 +142,4 @@ export const capabilityCards = [
   { title: "Expert Execution", icon: HardHat, copy: "Technical teams aligned across design, civil works, installation and maintenance." }
 ];
 
-export const testimonials = [
-  {
-    quote:
-      "Arena Grid Infra helped us turn a complicated campus requirement into a clean, durable and beautiful sports zone.",
-    name: "Anika Mehra",
-    role: "Director, Northline International School"
-  },
-  {
-    quote:
-      "Their team understood the operational side of our academy, not just the surface installation. That made the project smoother.",
-    name: "Raghav Menon",
-    role: "Founder, Cedar Sports Academy"
-  }
-];
+export const testimonials: { quote: string; name: string; role: string }[] = [];

@@ -7,6 +7,9 @@ import { ListingPage } from "./ui/pages/ListingPage";
 import { ContactPage } from "./ui/pages/ContactPage";
 import { adminRoutes } from "./admin/routes";
 import "./styles.css";
+import "./ui/styles/home.css";
+import "./ui/styles/home-sections.css";
+import "./ui/styles/home-motion.css";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +24,6 @@ const router = createBrowserRouter([
       { path: "industries", element: <ListingPage title="Industries" kind="Institutional sectors" /> },
       { path: "projects", element: <ListingPage title="Projects" kind="Portfolio" /> },
       { path: "case-studies", element: <ListingPage title="Case Studies" kind="Outcomes" /> },
-      { path: "resources", element: <ListingPage title="Resources" kind="Guides and documents" /> },
       { path: "blog", element: <ListingPage title="Blog & News" kind="Insights" /> },
       { path: "gallery", element: <ListingPage title="Gallery" kind="Media library" /> },
       { path: "contact", element: <ContactPage /> }

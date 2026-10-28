@@ -5,11 +5,15 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "../db";
 import { ApiError } from "../errors";
-import { requireAuth, type AuthenticatedRequest } from "../middleware/auth";
+import { requireAuth, requireCsrf, type AuthenticatedRequest } from "../middleware/auth";
 import { logActivity } from "../lib/audit";
 import { CSRF_COOKIE, SESSION_COOKIE, csrfCookieOptions, sessionCookieOptions, signSession } from "../lib/tokens";
 
 export const authRouter = Router();
+authRouter.use((_request, response, next) => {
+  response.setHeader("Cache-Control", "no-store");
+  next();
+});
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -52,11 +56,12 @@ authRouter.post("/login", loginLimiter, async (request: AuthenticatedRequest, re
   await logActivity(request, "auth", user.id, "LOGIN");
 
   response.json({
-    user: { id: user.id, name: user.name, email: user.email, role: user.role }
+    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    csrfToken
   });
 });
 
-authRouter.post("/logout", requireAuth, async (request: AuthenticatedRequest, response) => {
+authRouter.post("/logout", requireAuth, requireCsrf, async (request: AuthenticatedRequest, response) => {
   await logActivity(request, "auth", request.user!.id, "LOGOUT");
   response.clearCookie(SESSION_COOKIE, { path: "/" });
   response.clearCookie(CSRF_COOKIE, { path: "/" });
@@ -68,6 +73,7 @@ authRouter.get("/me", requireAuth, async (request: AuthenticatedRequest, respons
   if (!user) throw new ApiError(401, "Authentication required");
 
   response.json({
-    user: { id: user.id, name: user.name, email: user.email, role: user.role }
+    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    csrfToken: request.cookies?.[CSRF_COOKIE]
   });
 });

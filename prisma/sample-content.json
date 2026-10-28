@@ -1,0 +1,202 @@
+[
+  {
+    "key": "football",
+    "category": "Outdoor Turf",
+    "sport": {
+      "name": "Sample: Football & Futsal",
+      "slug": "sample-football",
+      "shortDescription": "Sample sports offering for website review.",
+      "longDescription": "Plan a football or futsal space around the available plot, player numbers and daily usage. A typical scope includes the playing surface, goal positions, perimeter netting, safe access and optional training lighting. Surface selection and drainage are reviewed before installation.\n\nSample content for catalogue review. Image is illustrative.",
+      "heroImageUrl": "/images/products/turf.jpg",
+      "status": "PUBLISHED"
+    },
+    "product": {
+      "name": "Sample: Synthetic Football Turf",
+      "slug": "sample-football-surface",
+      "shortDescription": "A synthetic playing surface for compact football and futsal facilities. The sample system combines a prepared sub-base, drainage planning, turf installation and permanent field markings. Pile height, infill and cushioning should be selected",
+      "fullDescription": "A synthetic playing surface for compact football and futsal facilities. The sample system combines a prepared sub-base, drainage planning, turf installation and permanent field markings. Pile height, infill and cushioning should be selected after assessing usage and ground conditions.\n\nSample catalogue entry; specifications are illustrative and subject to site assessment.",
+      "mainImageUrl": "/images/products/turf.jpg",
+      "features": [
+        "UV-stable synthetic fibres",
+        "Drainage-led base preparation",
+        "Custom field markings and goal layouts"
+      ],
+      "bestFor": [
+        "Football academies",
+        "Community arenas",
+        "School grounds"
+      ],
+      "status": "PUBLISHED"
+    },
+    "project": {
+      "name": "Demo: Community Football Arena",
+      "slug": "demo-football-project",
+      "location": "Noida ? illustrative location",
+      "description": "DEMO PROJECT ? not an Arena Grid client installation. The location, scope and progress are fictional sample data. The Before image is an original site-planning illustration; the After image is a stock reference, not a photograph of the same site.\n\nScope: A synthetic playing surface for compact football and futsal facilities. The sample system combines a prepared sub-base, drainage planning, turf installation and permanent field markings. Pile height, infill and cushioning should be selected after assessing usage and ground conditions.\n\nSample delivery stages: site review, base preparation, surface installation, markings and handover. Completed is shown only to demonstrate the status option.",
+      "beforeImageUrl": "/images/samples/football-before.svg",
+      "afterImageUrl": "/images/products/turf.jpg",
+      "progress": 100,
+      "status": "PUBLISHED"
+    }
+  },
+  {
+    "key": "tennis",
+    "category": "Outdoor Courts",
+    "sport": {
+      "name": "Sample: Tennis",
+      "slug": "sample-tennis",
+      "shortDescription": "Sample sports offering for website review.",
+      "longDescription": "Create a tennis court with a consistent playing surface, clear markings and adequate run-off space. Planning covers court orientation, drainage, fencing, net-post foundations and lighting where required. Recreational and academy facilities can be configured for their expected use.\n\nSample content for catalogue review. Image is illustrative.",
+      "heroImageUrl": "/images/home/tennis-960.webp",
+      "status": "PUBLISHED"
+    },
+    "product": {
+      "name": "Sample: Acrylic Tennis Court Surface",
+      "slug": "sample-tennis-surface",
+      "shortDescription": "A layered acrylic finish for outdoor tennis courts, paired with a suitable prepared base. Texture, colour zones and line markings can be selected for the facility. The sample scope includes surface preparation, coating and a maintenance han",
+      "fullDescription": "A layered acrylic finish for outdoor tennis courts, paired with a suitable prepared base. Texture, colour zones and line markings can be selected for the facility. The sample scope includes surface preparation, coating and a maintenance handover; final performance depends on the chosen system and site.\n\nSample catalogue entry; specifications are illustrative and subject to site assessment.",
+      "mainImageUrl": "/images/home/tennis-960.webp",
+      "features": [
+        "Layered acrylic finish",
+        "Custom playing-area colours",
+        "Defined line-marking layout"
+      ],
+      "bestFor": [
+        "Tennis academies",
+        "Clubs",
+        "Residential communities"
+      ],
+      "status": "PUBLISHED"
+    },
+    "project": {
+      "name": "Demo: Academy Tennis Court Upgrade",
+      "slug": "demo-tennis-project",
+      "location": "Pune ? illustrative location",
+      "description": "DEMO PROJECT ? not an Arena Grid client installation. The location, scope and progress are fictional sample data. The Before image is an original site-planning illustration; the After image is a stock reference, not a photograph of the same site.\n\nScope: A layered acrylic finish for outdoor tennis courts, paired with a suitable prepared base. Texture, colour zones and line markings can be selected for the facility. The sample scope includes surface preparation, coating and a maintenance handover; final performance depends on the chosen system and site.\n\nSample delivery stages: site review, base preparation, surface installation, markings and handover. Ongoing is shown only to demonstrate the status option.",
+      "beforeImageUrl": "/images/samples/tennis-before.svg",
+      "afterImageUrl": "/images/home/tennis-960.webp",
+      "progress": 0,
+      "status": "PUBLISHED"
+    }
+  },
+  {
+    "key": "basketball",
+    "category": "Outdoor Courts",
+    "sport": {
+      "name": "Sample: Basketball",
+      "slug": "sample-basketball",
+      "shortDescription": "Sample sports offering for website review.",
+      "longDescription": "Design a basketball space for coaching, recreation or school sport. The layout coordinates the playing court, baskets, run-off zones and spectator circulation. Outdoor coatings and indoor floor options are chosen according to exposure, usage and maintenance requirements.\n\nSample content for catalogue review. Image is illustrative.",
+      "heroImageUrl": "/images/home/basketball-960.webp",
+      "status": "PUBLISHED"
+    },
+    "product": {
+      "name": "Sample: Outdoor Basketball Court System",
+      "slug": "sample-basketball-surface",
+      "shortDescription": "An outdoor court system combining a prepared base, textured sports coating and basketball markings. The concept supports school and community facilities with optional multi-sport lines. Drainage, hoop foundations and surrounding circulation",
+      "fullDescription": "An outdoor court system combining a prepared base, textured sports coating and basketball markings. The concept supports school and community facilities with optional multi-sport lines. Drainage, hoop foundations and surrounding circulation are coordinated with the surface installation.\n\nSample catalogue entry; specifications are illustrative and subject to site assessment.",
+      "mainImageUrl": "/images/home/basketball-960.webp",
+      "features": [
+        "Textured court finish",
+        "Basketball and optional multi-sport markings",
+        "Coordinated hoop and edge detailing"
+      ],
+      "bestFor": [
+        "Schools",
+        "Community parks",
+        "Training centres"
+      ],
+      "status": "PUBLISHED"
+    },
+    "project": {
+      "name": "Demo: School Basketball Court",
+      "slug": "demo-basketball-project",
+      "location": "Jaipur ? illustrative location",
+      "description": "DEMO PROJECT ? not an Arena Grid client installation. The location, scope and progress are fictional sample data. The Before image is an original site-planning illustration; the After image is a stock reference, not a photograph of the same site.\n\nScope: An outdoor court system combining a prepared base, textured sports coating and basketball markings. The concept supports school and community facilities with optional multi-sport lines. Drainage, hoop foundations and surrounding circulation are coordinated with the surface installation.\n\nSample delivery stages: site review, base preparation, surface installation, markings and handover. Completed is shown only to demonstrate the status option.",
+      "beforeImageUrl": "/images/samples/basketball-before.svg",
+      "afterImageUrl": "/images/home/basketball-960.webp",
+      "progress": 100,
+      "status": "PUBLISHED"
+    }
+  },
+  {
+    "key": "indoor",
+    "category": "Indoor Flooring",
+    "sport": {
+      "name": "Sample: Indoor Multi-Sport",
+      "slug": "sample-indoor",
+      "shortDescription": "Sample sports offering for website review.",
+      "longDescription": "Make a covered hall suitable for several activities through coordinated floor selection, court markings, equipment positions and storage. Indoor basketball, badminton training and general fitness may share a hall when the layout, clearances and operating plan allow it.\n\nSample content for catalogue review. Image is illustrative.",
+      "heroImageUrl": "/images/products/indoor-flooring.jpg",
+      "status": "PUBLISHED"
+    },
+    "product": {
+      "name": "Sample: Indoor Wooden Sports Flooring",
+      "slug": "sample-indoor-surface",
+      "shortDescription": "A wooden sports-floor concept for covered training halls and shared sports spaces. The sample scope includes substrate assessment, a compatible support system, timber finish and agreed court markings. Moisture conditions, activity mix and c",
+      "fullDescription": "A wooden sports-floor concept for covered training halls and shared sports spaces. The sample scope includes substrate assessment, a compatible support system, timber finish and agreed court markings. Moisture conditions, activity mix and cleaning routines guide the final specification.\n\nSample catalogue entry; specifications are illustrative and subject to site assessment.",
+      "mainImageUrl": "/images/products/indoor-flooring.jpg",
+      "features": [
+        "Sport-specific support system options",
+        "Multi-court marking layouts",
+        "Planned cleaning and maintenance access"
+      ],
+      "bestFor": [
+        "Indoor sports halls",
+        "Academies",
+        "School gymnasiums"
+      ],
+      "status": "PUBLISHED"
+    },
+    "project": {
+      "name": "Demo: Indoor Training Hall Fit-Out",
+      "slug": "demo-indoor-project",
+      "location": "Bengaluru ? illustrative location",
+      "description": "DEMO PROJECT ? not an Arena Grid client installation. The location, scope and progress are fictional sample data. The Before image is an original site-planning illustration; the After image is a stock reference, not a photograph of the same site.\n\nScope: A wooden sports-floor concept for covered training halls and shared sports spaces. The sample scope includes substrate assessment, a compatible support system, timber finish and agreed court markings. Moisture conditions, activity mix and cleaning routines guide the final specification.\n\nSample delivery stages: site review, base preparation, surface installation, markings and handover. Ongoing is shown only to demonstrate the status option.",
+      "beforeImageUrl": "/images/samples/indoor-before.svg",
+      "afterImageUrl": "/images/products/indoor-flooring.jpg",
+      "progress": 0,
+      "status": "PUBLISHED"
+    }
+  },
+  {
+    "key": "athletics",
+    "category": "Athletics Surfaces",
+    "sport": {
+      "name": "Sample: Athletics & Running Tracks",
+      "slug": "sample-athletics",
+      "shortDescription": "Sample sports offering for website review.",
+      "longDescription": "Plan a running track around the training programme, available site and supporting athletics areas. Layout work includes lanes, curve geometry, drainage and access. Surface systems are selected for expected traffic and maintenance, with competition requirements assessed separately.\n\nSample content for catalogue review. Image is illustrative.",
+      "heroImageUrl": "/images/home/athletics-960.webp",
+      "status": "PUBLISHED"
+    },
+    "product": {
+      "name": "Sample: Synthetic Running Track Surface",
+      "slug": "sample-athletics-surface",
+      "shortDescription": "A synthetic track-surface concept for institutional training and athletics facilities. The sample system covers base coordination, surface layers, drainage edges and lane markings. Track geometry and any competition requirements must be con",
+      "fullDescription": "A synthetic track-surface concept for institutional training and athletics facilities. The sample system covers base coordination, surface layers, drainage edges and lane markings. Track geometry and any competition requirements must be confirmed during detailed design; this sample makes no certification claim.\n\nSample catalogue entry; specifications are illustrative and subject to site assessment.",
+      "mainImageUrl": "/images/home/athletics-960.webp",
+      "features": [
+        "Layered synthetic running surface",
+        "Coordinated lanes and start markings",
+        "Drainage and edge-transition planning"
+      ],
+      "bestFor": [
+        "Schools and colleges",
+        "Training campuses",
+        "Sports complexes"
+      ],
+      "status": "PUBLISHED"
+    },
+    "project": {
+      "name": "Demo: Campus Running Track",
+      "slug": "demo-athletics-project",
+      "location": "Hyderabad ? illustrative location",
+      "description": "DEMO PROJECT ? not an Arena Grid client installation. The location, scope and progress are fictional sample data. The Before image is an original site-planning illustration; the After image is a stock reference, not a photograph of the same site.\n\nScope: A synthetic track-surface concept for institutional training and athletics facilities. The sample system covers base coordination, surface layers, drainage edges and lane markings. Track geometry and any competition requirements must be confirmed during detailed design; this sample makes no certification claim.\n\nSample delivery stages: site review, base preparation, surface installation, markings and handover. Completed is shown only to demonstrate the status option.",
+      "beforeImageUrl": "/images/samples/athletics-before.svg",
+      "afterImageUrl": "/images/home/athletics-960.webp",
+      "progress": 100,
+      "status": "PUBLISHED"
+    }
+  }
+]

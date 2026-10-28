@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { adminApi, ApiClientError } from "../api";
-import { useAuth } from "../AuthContext";
+import { adminApi, ApiClientError } from "../services/api";
+import { useAuth } from "../hooks/useAuth";
+import { mediaUrl } from "../../services/apiConfig";
 
 interface MediaAsset {
   id: string;
@@ -94,7 +95,7 @@ export function MediaLibraryPage() {
             {items.map((item) => (
               <div className="admin-media-item" key={item.id}>
                 {item.mimeType.startsWith("image/") ? (
-                  <img src={item.url} alt={item.title} />
+                  <img src={mediaUrl(item.url)} alt={item.title} />
                 ) : (
                   <div
                     style={{

@@ -1,4 +1,4 @@
-import type { Role } from "./AuthContext";
+import type { Role } from "./auth/context";
 
 export type FieldType =
   | "text"
@@ -10,7 +10,10 @@ export type FieldType =
   | "number"
   | "date"
   | "status"
-  | "specifications";
+  | "specifications"
+  | "image"
+  | "text-list"
+  | "project-progress";
 
 export interface FieldDef {
   key: string;
@@ -20,6 +23,9 @@ export interface FieldDef {
   optionsResource?: string;
   required?: boolean;
   help?: string;
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 export interface ColumnDef {
@@ -34,7 +40,7 @@ export interface ResourceDef {
   titleField: string; // field used as the row/page title
   columns: ColumnDef[];
   fields: FieldDef[];
-  roles: { read: Role[]; write: Role[] };
+  roles: { read: Role[]; write: Role[]; delete: Role[] };
 }
 
 const ALL_ROLES: Role[] = [
@@ -47,6 +53,7 @@ const ALL_ROLES: Role[] = [
   "EDITOR"
 ];
 const CONTENT_WRITE: Role[] = ["SUPER_ADMIN", "CONTENT_MANAGER", "EDITOR"];
+const CONTENT_DELETE: Role[] = ["SUPER_ADMIN", "CONTENT_MANAGER"];
 const PROJECT_WRITE: Role[] = ["SUPER_ADMIN", "PROJECT_MANAGER", "CONTENT_MANAGER"];
 
 const statusField: FieldDef = { key: "status", label: "Status", type: "status" };
@@ -57,23 +64,20 @@ export const resourceDefs: ResourceDef[] = [
     label: "Products",
     singularLabel: "Product",
     titleField: "name",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "name", label: "Name" },
-      { key: "sku", label: "SKU" },
       { key: "category.name", label: "Category" },
       { key: "status", label: "Status" }
     ],
     fields: [
-      { key: "name", label: "Name", type: "text", required: true },
+      { key: "name", label: "Product name", type: "text", required: true },
       { key: "slug", label: "Slug", type: "slug", required: true },
-      { key: "sku", label: "SKU", type: "text" },
+      { key: "mainImageUrl", label: "Product image", type: "image" },
       { key: "categoryId", label: "Category", type: "select", optionsResource: "product-categories" },
-      { key: "shortDescription", label: "Short description", type: "textarea" },
-      { key: "fullDescription", label: "Full description", type: "textarea" },
-      { key: "sportIds", label: "Related sports", type: "multiselect", optionsResource: "sports" },
-      { key: "serviceIds", label: "Related services", type: "multiselect", optionsResource: "services" },
-      { key: "specifications", label: "Specifications", type: "specifications" },
+      { key: "fullDescription", label: "Product description", type: "textarea" },
+        { key: "features", label: "Features", type: "text-list", help: "Add each feature separately (up to 20)." },
+        { key: "bestFor", label: "Best for", type: "text-list", help: "Add uses such as School grounds or Football turfs (up to 30)." },
       statusField
     ]
   },
@@ -82,7 +86,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Product Categories",
     singularLabel: "Category",
     titleField: "name",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "name", label: "Name" },
       { key: "status", label: "Status" }
@@ -99,18 +103,16 @@ export const resourceDefs: ResourceDef[] = [
     label: "Sports",
     singularLabel: "Sport",
     titleField: "name",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "name", label: "Name" },
       { key: "status", label: "Status" }
     ],
     fields: [
-      { key: "name", label: "Name", type: "text", required: true },
+      { key: "name", label: "Sport name", type: "text", required: true },
       { key: "slug", label: "Slug", type: "slug", required: true },
-      { key: "shortDescription", label: "Short description", type: "textarea" },
-      { key: "longDescription", label: "Long description", type: "textarea" },
-      { key: "productIds", label: "Related products", type: "multiselect", optionsResource: "products" },
-      { key: "serviceIds", label: "Related services", type: "multiselect", optionsResource: "services" },
+      { key: "heroImageUrl", label: "Sport image", type: "image" },
+      { key: "longDescription", label: "Description", type: "textarea" },
       statusField
     ]
   },
@@ -119,7 +121,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Services",
     singularLabel: "Service",
     titleField: "name",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "name", label: "Name" },
       { key: "category", label: "Category" },
@@ -142,7 +144,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Industries",
     singularLabel: "Industry",
     titleField: "name",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "name", label: "Name" },
       { key: "status", label: "Status" }
@@ -150,8 +152,9 @@ export const resourceDefs: ResourceDef[] = [
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
       { key: "slug", label: "Slug", type: "slug", required: true },
+      { key: "imageUrl", label: "Industry image", type: "image" },
       { key: "description", label: "Description", type: "textarea" },
-      { key: "serviceIds", label: "Related services", type: "multiselect", optionsResource: "services" },
+      { key: "solution", label: "Solution", type: "textarea" },
       statusField
     ]
   },
@@ -160,29 +163,21 @@ export const resourceDefs: ResourceDef[] = [
     label: "Projects",
     singularLabel: "Project",
     titleField: "name",
-    roles: { read: ALL_ROLES, write: PROJECT_WRITE },
+    roles: { read: ALL_ROLES, write: PROJECT_WRITE, delete: PROJECT_WRITE },
     columns: [
-      { key: "name", label: "Name" },
-      { key: "client", label: "Client" },
-      { key: "city", label: "City" },
+      { key: "name", label: "Title" },
+      { key: "location", label: "Location" },
+      { key: "progress", label: "Project progress" },
       { key: "status", label: "Status" }
     ],
     fields: [
-      { key: "name", label: "Name", type: "text", required: true },
+      { key: "name", label: "Title", type: "text", required: true },
       { key: "slug", label: "Slug", type: "slug", required: true },
-      { key: "client", label: "Client", type: "text" },
-      { key: "city", label: "City", type: "text" },
-      { key: "state", label: "State", type: "text" },
-      { key: "country", label: "Country", type: "text" },
-      { key: "projectType", label: "Project type", type: "text" },
+      { key: "location", label: "Location", type: "text" },
+      { key: "beforeImageUrl", label: "Before image", type: "image" },
+      { key: "afterImageUrl", label: "After image", type: "image" },
       { key: "description", label: "Description", type: "textarea" },
-      { key: "challenge", label: "Challenge", type: "textarea" },
-      { key: "solution", label: "Solution", type: "textarea" },
-      { key: "outcome", label: "Outcome", type: "textarea" },
-      { key: "sportIds", label: "Sports", type: "multiselect", optionsResource: "sports" },
-      { key: "productIds", label: "Products", type: "multiselect", optionsResource: "products" },
-      { key: "serviceIds", label: "Services", type: "multiselect", optionsResource: "services" },
-      { key: "industryIds", label: "Industries", type: "multiselect", optionsResource: "industries" },
+      { key: "progress", label: "Project progress", type: "project-progress" },
       statusField
     ]
   },
@@ -191,7 +186,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Case Studies",
     singularLabel: "Case Study",
     titleField: "title",
-    roles: { read: ALL_ROLES, write: PROJECT_WRITE },
+    roles: { read: ALL_ROLES, write: PROJECT_WRITE, delete: PROJECT_WRITE },
     columns: [
       { key: "title", label: "Title" },
       { key: "client", label: "Client" },
@@ -218,7 +213,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Blog & News",
     singularLabel: "Post",
     titleField: "title",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "title", label: "Title" },
       { key: "category", label: "Category" },
@@ -237,33 +232,11 @@ export const resourceDefs: ResourceDef[] = [
     ]
   },
   {
-    key: "resources",
-    label: "Resources",
-    singularLabel: "Resource",
-    titleField: "title",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
-    columns: [
-      { key: "title", label: "Title" },
-      { key: "category", label: "Category" },
-      { key: "status", label: "Status" }
-    ],
-    fields: [
-      { key: "title", label: "Title", type: "text", required: true },
-      { key: "slug", label: "Slug", type: "slug", required: true },
-      { key: "description", label: "Description", type: "textarea" },
-      { key: "category", label: "Category", type: "text" },
-      { key: "fileId", label: "File", type: "select", optionsResource: "media" },
-      { key: "productIds", label: "Related products", type: "multiselect", optionsResource: "products" },
-      { key: "sportIds", label: "Related sports", type: "multiselect", optionsResource: "sports" },
-      statusField
-    ]
-  },
-  {
     key: "faqs",
     label: "FAQs",
     singularLabel: "FAQ",
     titleField: "question",
-    roles: { read: ALL_ROLES, write: CONTENT_WRITE },
+    roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
     columns: [
       { key: "question", label: "Question" },
       { key: "category", label: "Category" },
@@ -285,7 +258,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Pages",
     singularLabel: "Page",
     titleField: "title",
-    roles: { read: ALL_ROLES, write: ["SUPER_ADMIN", "CONTENT_MANAGER", "SEO_MANAGER"] },
+    roles: { read: ALL_ROLES, write: ["SUPER_ADMIN", "CONTENT_MANAGER", "SEO_MANAGER"], delete: CONTENT_DELETE },
     columns: [
       { key: "title", label: "Title" },
       { key: "slug", label: "Slug" },
@@ -303,7 +276,7 @@ export const resourceDefs: ResourceDef[] = [
     label: "Menus",
     singularLabel: "Menu Item",
     titleField: "label",
-    roles: { read: ALL_ROLES, write: ["SUPER_ADMIN", "CONTENT_MANAGER"] },
+    roles: { read: ALL_ROLES, write: ["SUPER_ADMIN", "CONTENT_MANAGER"], delete: CONTENT_DELETE },
     columns: [
       { key: "label", label: "Label" },
       { key: "url", label: "URL" },

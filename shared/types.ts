@@ -7,7 +7,6 @@ export const publicRoutes = [
   "/industries",
   "/projects",
   "/case-studies",
-  "/resources",
   "/blog",
   "/gallery",
   "/contact"
@@ -26,7 +25,6 @@ export const adminModules = [
   "testimonials",
   "partners",
   "blog",
-  "resources",
   "gallery",
   "faqs",
   "pages",

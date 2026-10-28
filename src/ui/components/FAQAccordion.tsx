@@ -7,7 +7,7 @@ const faqs = [
   },
   {
     question: "Are products connected to sports and project references?",
-    answer: "The platform foundation supports CMS relationships between products, sports, services, projects, resources and FAQs."
+    answer: "The platform foundation supports CMS relationships between products, sports, services, projects and FAQs."
   },
   {
     question: "Can the website support landing pages for campaigns?",
@@ -15,10 +15,12 @@ const faqs = [
   }
 ];
 
-export function FAQAccordion() {
+type FAQItem = { question: string; answer: string };
+
+export function FAQAccordion({ items = faqs }: { items?: readonly FAQItem[] }) {
   return (
     <div className="faq-list">
-      {faqs.map((faq) => (
+      {items.map((faq) => (
         <details key={faq.question} className="faq-item">
           <summary>
             {faq.question}

@@ -1,11 +1,15 @@
+import "dotenv/config";
 import { PrismaClient, PublishStatus, type Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const DEMO_PASSWORD = "ChangeMe123!";
+const DEMO_PASSWORD = process.env.SEED_ADMIN_PASSWORD;
 
 async function seedUser(name: string, email: string, role: Role) {
+  if (!DEMO_PASSWORD || DEMO_PASSWORD.length < 10) {
+    throw new Error("Set SEED_ADMIN_PASSWORD to at least 10 characters before seeding demo users.");
+  }
   const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 12);
   return prisma.user.upsert({
     where: { email },
@@ -15,6 +19,9 @@ async function seedUser(name: string, email: string, role: Role) {
 }
 
 async function main() {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Demo seed data must not be installed in production.");
+  }
   // One demo login per role so RBAC can be exercised end to end.
   // All demo accounts share the password above - rotate before any shared/staging use.
   const admin = await seedUser("Arena Grid Admin", "admin@arenagridinfra.local", "SUPER_ADMIN");
@@ -53,7 +60,6 @@ async function main() {
     create: {
       name: "Synthetic Football Turf",
       slug: "synthetic-football-turf",
-      sku: "AGI-TURF-FOOTBALL",
       shortDescription: "Durable turf systems for professional and institutional football facilities.",
       categoryId: category.id,
       status: PublishStatus.PUBLISHED,
@@ -72,7 +78,6 @@ async function main() {
     create: {
       name: "IAAF Certified Running Track",
       slug: "iaaf-running-track",
-      sku: "AGI-TRACK-IAAF",
       shortDescription: "Full-depth polyurethane track systems built to IAAF Class 1 spec.",
       categoryId: trackCategory.id,
       status: PublishStatus.PUBLISHED,

@@ -1,4 +1,9 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/admin";
+import { ADMIN_API_BASE as API_BASE } from "../../services/apiConfig";
+let csrfToken: string | undefined;
+
+export function setCsrfToken(token: string | undefined) {
+  csrfToken = token;
+}
 
 export class ApiClientError extends Error {
   constructor(
@@ -22,7 +27,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = { ...(init.headers as Record<string, string>) };
 
   if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
-    const csrf = readCsrfCookie();
+    const csrf = csrfToken ?? readCsrfCookie();
     if (csrf) headers["X-CSRF-Token"] = csrf;
   }
 

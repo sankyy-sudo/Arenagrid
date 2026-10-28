@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { adminApi } from "../api";
+import { adminApi } from "../services/api";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 interface DashboardStats {
   leadCount: number;
@@ -10,15 +12,21 @@ interface DashboardStats {
 }
 
 export function DashboardPage() {
+  const { user } = useAuth();
+  const destination = user?.role === "SALES_USER" ? "/admin/leads"
+    : user?.role === "EDITOR" ? "/admin/products" : undefined;
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (destination) return;
     adminApi
       .get<DashboardStats>("/dashboard")
       .then(setStats)
       .catch(() => setError("Could not load dashboard stats."));
-  }, []);
+  }, [destination]);
+
+  if (destination) return <Navigate to={destination} replace />;
 
   return (
     <div>

@@ -29,6 +29,7 @@ export interface ResourceConfig {
     write: Role[];
     delete: Role[];
   };
+  allowCreate?: boolean;
   /** Fields to match against ?q= with a case-insensitive "contains" filter */
   searchFields?: string[];
   /** Transform validated input (e.g. turn relation id arrays into connect/set) before write */
@@ -67,6 +68,7 @@ export function createResourceRouter(config: ResourceConfig) {
   });
 
   router.post("/", requireRole(config.roles.write), async (request: AuthenticatedRequest, response) => {
+    if (config.allowCreate === false) throw new ApiError(405, "Create leads through the public enquiry endpoint");
     const parsed = config.createSchema.parse(request.body) as Record<string, unknown>;
     const data = config.beforeCreate ? config.beforeCreate(parsed) : parsed;
 
@@ -117,5 +119,5 @@ export function toOneRelation(id: unknown, mode: "connect" | "set") {
   if (id === null) {
     return mode === "connect" ? undefined : { disconnect: true };
   }
-  return { [mode === "connect" ? "connect" : "connect"]: { id: id as string } };
+  return { connect: { id: id as string } };
 }

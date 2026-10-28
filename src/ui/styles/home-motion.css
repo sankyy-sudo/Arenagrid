@@ -1,0 +1,31 @@
+/* Content remains visible without IntersectionObserver or with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .home-reveal:not(.is-reveal-pending) {
+    transition: opacity 480ms var(--home-ease) var(--reveal-delay, 0ms),
+      transform 480ms var(--home-ease) var(--reveal-delay, 0ms);
+  }
+
+  .home-reveal.is-reveal-pending { opacity: 0; transform: translateY(16px); }
+  .home-reveal:focus-within { opacity: 1; transform: none; transition: none; }
+
+  .home-text-link svg,
+  .home-sport-options summary > svg,
+  .home-industry-list summary > svg,
+  .home-faq summary svg,
+  .site-header--shared .nav-trigger svg {
+    transition: transform 180ms var(--home-ease);
+  }
+
+  .home-text-link:hover svg { transform: translateX(3px); }
+  .home-faq details[open] summary svg { transform: rotate(180deg); }
+  .site-header--shared .nav-cluster.is-open .nav-trigger svg { transform: rotate(180deg); }
+  .site-header--shared .mega-menu { transition: transform 170ms ease, opacity 170ms ease; }
+
+  .home-design .home-button:active,
+  .site-header--shared .quote-button:active { transform: translateY(0) scale(0.98); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home-sport-card__image img { transition: transform 420ms var(--home-ease); }
+  .home-sport-card:hover .home-sport-card__image img { transform: scale(1.035); }
+}

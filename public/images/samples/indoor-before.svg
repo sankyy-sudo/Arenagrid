@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-label="Demo site planning illustration for Indoor Training Hall Fit-Out">
+ <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#cbd8cf" stroke-width="1"/></pattern></defs>
+ <rect width="960" height="720" fill="#f4f7f2"/><rect x="30" y="30" width="900" height="660" rx="24" fill="url(#grid)"/>
+ <text x="70" y="95" fill="#0b503b" font-family="Arial,sans-serif" font-size="20" font-weight="700">DEMO / BEFORE-STAGE CONCEPT</text>
+ <text x="70" y="145" fill="#24352d" font-family="Arial,sans-serif" font-size="30" font-weight="700">Indoor Training Hall Fit-Out</text>
+ <rect x="140" y="215" width="680" height="315" rx="12" fill="#e2e7dc" stroke="#688171" stroke-width="3" stroke-dasharray="12 8"/>
+ <path d="M170 260L780 475M170 320L650 500M300 240L790 410" stroke="#c1cabb" stroke-width="12"/>
+ <circle cx="170" cy="245" r="8" fill="#0b503b"/><circle cx="790" cy="245" r="8" fill="#0b503b"/><circle cx="170" cy="500" r="8" fill="#0b503b"/><circle cx="790" cy="500" r="8" fill="#0b503b"/>
+ <rect x="290" y="330" width="380" height="70" rx="10" fill="#fff"/><text x="480" y="374" text-anchor="middle" fill="#0b503b" font-family="Arial,sans-serif" font-size="25">Proposed surface area</text>
+ <text x="70" y="595" fill="#334b3c" font-family="Arial,sans-serif" font-size="22">Site survey ? base preparation ? drainage planning</text>
+ <text x="70" y="650" fill="#536457" font-family="Arial,sans-serif" font-size="18">Illustration only ? not a real client site or a measured construction plan.</text>
+</svg>

@@ -1,0 +1,18 @@
+.projects-empty { padding: 48px var(--page-pad); background: var(--surface); }
+.projects-empty > div { max-width: var(--container); margin-inline: auto; }
+.projects-empty h1 { margin: 0 0 16px; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.025em; color: var(--ink); }
+.projects-empty p { max-width: 600px; margin: 0; color: var(--graphite-800); line-height: 1.7; }
+
+.projects-list { display: grid; gap: 24px; }
+.project-card { padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); border-radius: 16px; background: var(--white); box-shadow: var(--shadow-sm); min-width: 0; }
+.project-card h2 { margin: 0 0 12px; overflow-wrap: anywhere; }
+.project-location { display: flex; align-items: center; gap: 8px; }
+.project-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-block: 24px; }
+.project-photo { margin: 0; min-width: 0; }
+.project-photo > div { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; background: var(--green-100); }
+.project-photo img { width: 100%; height: 100%; object-fit: cover; }
+.project-photo span { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--green-800); }
+.project-photo figcaption { margin-top: 8px; font-weight: 600; }
+.project-description { white-space: pre-line; overflow-wrap: anywhere; }
+.project-progress { margin-top: 24px; }
+@media (max-width: 600px) { .project-comparison { grid-template-columns: 1fr; } }

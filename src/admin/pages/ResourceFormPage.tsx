@@ -1,8 +1,9 @@
+import { ImageField } from "../components/ImageField";
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { adminApi, ApiClientError } from "../api";
+import { adminApi, ApiClientError } from "../services/api";
 import { getResourceDef, type FieldDef } from "../resourceConfig";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 type FormValues = Record<string, unknown>;
 
@@ -30,6 +31,11 @@ interface Specification {
 }
 
 export function ResourceFormPage() {
+  const { resourceKey, id } = useParams();
+  return <ResourceForm key={`${resourceKey}/${id}`} />;
+}
+
+function ResourceForm() {
   const { resourceKey, id } = useParams<{ resourceKey: string; id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -40,6 +46,9 @@ export function ResourceFormPage() {
   const [options, setOptions] = useState<Record<string, OptionItem[]>>({});
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [busyImages, setBusyImages] = useState<Record<string, boolean>>({});
+  const mediaBusy = Object.values(busyImages).some(Boolean);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(!isNew);
 
@@ -75,6 +84,7 @@ export function ResourceFormPage() {
       .then((res) => {
         const item = res.item;
         const initial: FormValues = { ...item };
+        if (def.key === "projects") initial.progress = item.progress === 100 ? 100 : 0;
         // Flatten relation objects back to id arrays/ids for the form.
         for (const field of def.fields) {
           if (field.type === "multiselect") {
@@ -100,11 +110,9 @@ export function ResourceFormPage() {
 
   if (!def) return <Navigate to="/admin" replace />;
   const canWrite = user ? def.roles.write.includes(user.role) : false;
-  if (!canWrite && !isNew) {
-    // Read-only viewers still land here via the "View" link; keep it simple and bounce them back.
-  }
 
   function setField(key: string, value: unknown) {
+    setSaved(false);
     setValues((prev) => ({ ...prev, [key]: value }));
     if (key === def!.fields.find((f) => f.type === "text" && f.key !== "slug")?.key && !slugTouched) {
       const slugField = def!.fields.find((f) => f.type === "slug");
@@ -116,11 +124,15 @@ export function ResourceFormPage() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!def) return;
+    if (!def || mediaBusy || saving) return;
+    setSaved(false);
     setSaving(true);
     setError(null);
     try {
-      const payload = { ...values };
+      // Omit hidden content settings so editing the visible form cannot overwrite them.
+      const payload = ["products", "sports", "projects", "industries"].includes(def.key)
+        ? Object.fromEntries(def.fields.filter(field => field.key in values).map(field => [field.key, values[field.key]]))
+        : { ...values };
       delete payload.id;
       delete payload.createdAt;
       delete payload.updatedAt;
@@ -130,6 +142,7 @@ export function ResourceFormPage() {
         navigate(`/admin/${def.key}/${res.item.id}`, { replace: true });
       } else {
         await adminApi.put(`/${def.key}/${id}`, payload);
+        setSaved(true);
       }
     } catch (err) {
       setError(err instanceof ApiClientError ? formatValidationError(err) : "Save failed.");
@@ -140,26 +153,35 @@ export function ResourceFormPage() {
 
   if (loading) return <div className="admin-empty">Loading&hellip;</div>;
 
-  return (
-    <div>
-      <h2 className="admin-h2">
-        {isNew ? `New ${def.singularLabel}` : `Edit ${def.singularLabel}`}
-      </h2>
-      {error && <div className="admin-error">{error}</div>}
-      <form className="admin-card" onSubmit={handleSubmit}>
-        {def.fields.map((field) => (
+  const productFields = ["mainImageUrl", "name", "categoryId", "fullDescription", "features", "bestFor", "slug", "status"];
+  const mainFields = def.key === "products"
+    ? productFields.flatMap(key => def.fields.filter(field => field.key === key))
+    : def.fields;
+  const renderField = (field: FieldDef) => (
           <FieldInput
             key={field.key}
+            onMediaBusy={busy => setBusyImages(current => ({ ...current, [field.key]: busy }))}
             field={field}
             value={values[field.key]}
             options={field.optionsResource ? options[field.optionsResource] : undefined}
             onChange={(v) => setField(field.key, v)}
             onSlugManualEdit={field.type === "slug" ? () => setSlugTouched(true) : undefined}
-            disabled={!canWrite}
+            disabled={!canWrite || saving}
           />
-        ))}
+  );
+
+  return (
+    <div>
+      <h2 className="admin-h2">
+        {isNew ? `New ${def.singularLabel}` : `Edit ${def.singularLabel}`}
+      </h2>
+      {error && <div className="admin-error" role="alert">{error}</div>}
+      {saved && <p role="status">Changes saved.</p>}
+      {def.key === "products" && <p>Publish to show this product on the website. Draft and archived products stay hidden. Product categories have their own publish status.</p>}
+      <form className="admin-card" onSubmit={handleSubmit}>
+        {mainFields.map(renderField)}
         {canWrite && (
-          <button className="admin-btn admin-btn-primary" type="submit" disabled={saving}>
+          <button className="admin-btn admin-btn-primary" type="submit" disabled={saving || mediaBusy}>
             {saving ? "Saving\u2026" : "Save"}
           </button>
         )}
@@ -182,7 +204,8 @@ function FieldInput({
   options,
   onChange,
   onSlugManualEdit,
-  disabled
+  disabled,
+  onMediaBusy
 }: {
   field: FieldDef;
   value: unknown;
@@ -190,8 +213,27 @@ function FieldInput({
   onChange: (value: unknown) => void;
   onSlugManualEdit?: () => void;
   disabled: boolean;
+  onMediaBusy: (busy: boolean) => void;
 }) {
   const id = `field-${field.key}`;
+
+  if (field.type === "image") return <ImageField id={id} label={field.label} value={value} disabled={disabled} onChange={onChange} onBusy={onMediaBusy} />;
+
+  if (field.type === "text-list") {
+    const items = Array.isArray(value) ? value as string[] : [];
+    const limit = field.key === "features" ? 20 : 30;
+    const maxLength = field.key === "features" ? 400 : 160;
+    return <fieldset className="admin-form-row" style={{ border: 0, padding: 0, minWidth: 0 }}>
+      <legend>{field.label}</legend>
+      <p className="help">{field.help}</p>
+      {items.map((item, index) => <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+        <input className="admin-input" aria-label={`${field.label} ${index + 1}`} value={item} required maxLength={maxLength} disabled={disabled}
+          onChange={event => onChange(items.map((current, position) => position === index ? event.target.value : current))} />
+        {!disabled && <button type="button" className="admin-btn admin-btn-ghost" aria-label={`Remove ${field.label} ${index + 1}`} onClick={() => onChange(items.filter((_, position) => position !== index))}>Remove</button>}
+      </div>)}
+      {!disabled && <button type="button" className="admin-btn admin-btn-ghost" disabled={items.length >= limit} onClick={() => onChange([...items, ""])}>+ Add {field.key === "features" ? "feature" : "use"}</button>}
+    </fieldset>;
+  }
 
   if (field.type === "boolean") {
     return (
@@ -237,7 +279,7 @@ function FieldInput({
           className="admin-select"
           value={typeof value === "string" ? value : ""}
           disabled={disabled}
-          onChange={(e) => onChange(e.target.value || undefined)}
+          onChange={(e) => onChange(e.target.value || null)}
         >
           <option value="">&mdash; None &mdash;</option>
           {(options ?? []).map((opt) => (
@@ -275,6 +317,16 @@ function FieldInput({
     );
   }
 
+  if (field.type === "project-progress") {
+    return <div className="admin-form-row">
+      <label htmlFor={id}>{field.label}</label>
+      <select id={id} className="admin-select" value={value === 100 ? 100 : 0} disabled={disabled} onChange={event => onChange(Number(event.target.value))}>
+        <option value={0}>Ongoing</option>
+        <option value={100}>Completed</option>
+      </select>
+    </div>;
+  }
+
   if (field.type === "number") {
     return (
       <div className="admin-form-row">
@@ -282,6 +334,9 @@ function FieldInput({
         <input
           id={id}
           type="number"
+          min={field.min}
+          max={field.max}
+          step={field.step}
           className="admin-input"
           disabled={disabled}
           value={typeof value === "number" ? value : ""}

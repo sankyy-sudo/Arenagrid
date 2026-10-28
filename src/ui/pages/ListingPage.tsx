@@ -1,3 +1,9 @@
+import { SportsContent } from "../components/SportsContent";
+import { ProjectsContent } from "../components/ProjectsContent";
+import { IndustriesContent } from "../components/IndustriesContent";
+import { ServicesContent } from "../components/ServicesContent";
+import "../styles/products.css";
+import { ProductContent } from "../components/products/ProductContent";
 import { ArrowRight, Filter, Search } from "lucide-react";
 import { ButtonLink } from "../components/ButtonLink";
 import { SectionHeader } from "../components/SectionHeader";
@@ -45,7 +51,7 @@ function getItems(title: string, kind: string): ListingCardItem[] {
     {
       title: "Relationship-led content",
       label: "Architecture",
-      copy: "Products, sports, services, projects, resources and FAQs are designed to connect through the data model."
+      copy: "Products, sports, services, projects and FAQs are designed to connect through the data model."
     },
     {
       title: "SEO-ready publishing",
@@ -56,6 +62,12 @@ function getItems(title: string, kind: string): ListingCardItem[] {
 }
 
 export function ListingPage({ title, kind }: ListingPageProps) {
+  if (title === "Products") return <ProductContent />;
+  if (title === "Services") return <ServicesContent />;
+  if (title === "Industries") return <IndustriesContent />;
+  if (title === "Projects") return <ProjectsContent />;
+  if (title === "Sports & Solutions") return <SportsContent />;
+
   const items = getItems(title, kind);
 
   return (
@@ -110,3 +122,4 @@ export function ListingPage({ title, kind }: ListingPageProps) {
     </>
   );
 }
+

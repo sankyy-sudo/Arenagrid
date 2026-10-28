@@ -36,7 +36,7 @@ const productConfig: ResourceConfig = {
   createSchema: v.productCreateSchema,
   updateSchema: v.productUpdateSchema,
   include: { category: true, specifications: true, sports: true, services: true, gallery: true },
-  searchFields: ["name", "sku"],
+  searchFields: ["name"],
   roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
   beforeCreate: (data) => {
     const { core, relations } = extractRelations(data, [
@@ -56,13 +56,16 @@ const productConfig: ResourceConfig = {
     };
   },
   beforeUpdate: (data) => {
-    const { core, relations } = extractRelations(data, ["categoryId", "sportIds", "serviceIds", "galleryIds"]);
+    const { core, relations } = extractRelations(data, ["categoryId", "sportIds", "serviceIds", "galleryIds", "specifications"]);
     return {
       ...core,
       category: toOneRelation(relations.categoryId, "set"),
       sports: toManyRelation(relations.sportIds, "set"),
       services: toManyRelation(relations.serviceIds, "set"),
-      gallery: toManyRelation(relations.galleryIds, "set")
+      gallery: toManyRelation(relations.galleryIds, "set"),
+      specifications: relations.specifications === undefined
+        ? undefined
+        : { deleteMany: {}, create: relations.specifications }
     };
   }
 };
@@ -162,7 +165,7 @@ const projectConfig: ResourceConfig = {
   createSchema: v.projectCreateSchema,
   updateSchema: v.projectUpdateSchema,
   include: { sports: true, products: true, services: true, industries: true, gallery: true },
-  searchFields: ["name", "client", "city"],
+  searchFields: ["name", "location", "client", "city"],
   roles: { read: ALL_ROLES, write: PROJECT_ROLES, delete: PROJECT_ROLES },
   beforeCreate: (data) => {
     const { core, relations } = extractRelations(data, [
@@ -258,35 +261,6 @@ const blogPostConfig: ResourceConfig = {
   }
 };
 
-const resourceConfig: ResourceConfig = {
-  name: "resources",
-  module: "resources",
-  model: "resource",
-  createSchema: v.resourceCreateSchema,
-  updateSchema: v.resourceUpdateSchema,
-  include: { file: true, products: true, sports: true },
-  searchFields: ["title", "category"],
-  roles: { read: ALL_ROLES, write: CONTENT_WRITE, delete: CONTENT_DELETE },
-  beforeCreate: (data) => {
-    const { core, relations } = extractRelations(data, ["fileId", "productIds", "sportIds"]);
-    return {
-      ...core,
-      file: toOneRelation(relations.fileId, "connect"),
-      products: toManyRelation(relations.productIds, "connect"),
-      sports: toManyRelation(relations.sportIds, "connect")
-    };
-  },
-  beforeUpdate: (data) => {
-    const { core, relations } = extractRelations(data, ["fileId", "productIds", "sportIds"]);
-    return {
-      ...core,
-      file: toOneRelation(relations.fileId, "set"),
-      products: toManyRelation(relations.productIds, "set"),
-      sports: toManyRelation(relations.sportIds, "set")
-    };
-  }
-};
-
 const faqConfig: ResourceConfig = {
   name: "faqs",
   module: "faqs",
@@ -358,12 +332,13 @@ const menuItemConfig: ResourceConfig = {
 const SALES_ROLES: Role[] = ["SUPER_ADMIN", "SALES_MANAGER", "SALES_USER"];
 
 const leadConfig: ResourceConfig = {
+  allowCreate: false,
   name: "leads",
   module: "leads",
   model: "lead",
   createSchema: v.leadUpdateSchema, // leads are created by the public API, admin only updates them
   updateSchema: v.leadUpdateSchema,
-  include: { assignedUser: true },
+  include: { assignedUser: { select: { id: true, name: true } } },
   searchFields: ["firstName", "lastName", "company", "email", "mobile"],
   roles: { read: SALES_ROLES, write: SALES_ROLES, delete: ["SUPER_ADMIN", "SALES_MANAGER"] },
   beforeUpdate: (data) => {
@@ -381,7 +356,6 @@ export const resourceConfigs: ResourceConfig[] = [
   projectConfig,
   caseStudyConfig,
   blogPostConfig,
-  resourceConfig,
   faqConfig,
   pageConfig,
   menuItemConfig,

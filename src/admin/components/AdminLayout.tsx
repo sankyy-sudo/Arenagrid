@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { resourceDefs } from "../resourceConfig";
 
 const EXTRA_LINKS = [
@@ -50,7 +50,9 @@ export function AdminLayout() {
           <div className="who">
             {user.name} &middot; {user.role.replace("_", " ")}
           </div>
-          <button className="admin-btn admin-btn-ghost" onClick={() => logout()}>
+          <button className="admin-btn admin-btn-ghost" onClick={() => {
+            void logout().catch(() => window.alert("Logout failed. Please try again."));
+          }}>
             Log out
           </button>
         </div>

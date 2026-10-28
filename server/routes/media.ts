@@ -34,12 +34,17 @@ const WRITE_ROLES = ["SUPER_ADMIN", "CONTENT_MANAGER", "EDITOR", "PROJECT_MANAGE
 const DELETE_ROLES = ["SUPER_ADMIN", "CONTENT_MANAGER"] as const;
 
 const storage = multer.diskStorage({
-  destination: async (_request, _file, callback) => {
-    await fs.mkdir(env.MEDIA_STORAGE_PATH, { recursive: true });
-    callback(null, env.MEDIA_STORAGE_PATH);
+  destination: (_request, _file, callback) => {
+    fs.mkdir(env.MEDIA_STORAGE_PATH, { recursive: true })
+      .then(() => callback(null, env.MEDIA_STORAGE_PATH))
+      .catch((error: Error) => callback(error, env.MEDIA_STORAGE_PATH));
   },
   filename: (_request, file, callback) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+    const extensions: Record<string, string> = {
+      "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp",
+      "image/gif": ".gif", "image/svg+xml": ".svg", "application/pdf": ".pdf"
+    };
+    const ext = extensions[file.mimetype];
     callback(null, `${randomUUID()}${ext}`);
   }
 });

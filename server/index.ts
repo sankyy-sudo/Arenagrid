@@ -1,42 +1,22 @@
-import path from "node:path";
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import cookieParser from "cookie-parser";
-import rateLimit from "express-rate-limit";
+import { app } from "./app";
 import { env } from "./config";
-import { adminRouter } from "./routes/admin";
-import { authRouter } from "./routes/auth";
-import { publicRouter } from "./routes/public";
-import { errorHandler } from "./errors";
-import { authenticate, requireCsrf } from "./middleware/auth";
+import { prisma } from "./db";
 
-const app = express();
-app.set("trust proxy", 1);
-
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-app.use(cors({ origin: env.APP_ORIGIN, credentials: true }));
-app.use(express.json({ limit: "1mb" }));
-app.use(cookieParser());
-
-// Public uploaded media (images/pdfs only, validated at upload time in media.ts).
-app.use("/uploads", express.static(path.resolve(env.MEDIA_STORAGE_PATH)));
-
-// Every request gets a best-effort identity from its session cookie; routes
-// that need auth still gate explicitly with requireAuth/requireRole.
-app.use(authenticate);
-
-// Public, unauthenticated API - leads endpoint is rate limited to blunt spam.
-const leadsLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false });
-app.use("/api/leads", leadsLimiter);
-app.use("/api", publicRouter);
-
-// Admin API - session required, CSRF required on every mutation.
-app.use("/api/admin/auth", authRouter);
-app.use("/api/admin", requireCsrf, adminRouter);
-
-app.use(errorHandler);
-
-app.listen(env.PORT, () => {
+const server = app.listen(env.PORT, () => {
   console.log(`Arena Grid Infra API listening on http://localhost:${env.PORT}`);
 });
+
+server.on("error", (error) => {
+  console.error("API failed to start:", error.message);
+  process.exitCode = 1;
+});
+
+function shutdown() {
+  server.close(() => {
+    void prisma.$disconnect().finally(() => process.exit());
+  });
+  setTimeout(() => process.exit(1), 10_000).unref();
+}
+
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);

@@ -1,3 +1,4 @@
+import { BrandMark } from "./BrandMark";
 export function Footer() {
   const columns = [
     {
@@ -14,8 +15,7 @@ export function Footer() {
       links: [
         ["Products", "/products"],
         ["Sports", "/sports"],
-        ["Industries", "/industries"],
-        ["Resources", "/resources"]
+        ["Industries", "/industries"]
       ]
     },
     {
@@ -30,15 +30,15 @@ export function Footer() {
   ];
 
   return (
-    <footer className="footer">
+    <footer className="footer footer--shared">
       <div className="footer-brand">
-        <span className="brand-mark">AG</span>
+        <BrandMark />
         <div>
           <strong>ARENA GRID INFRA</strong>
           <p>Premium sports infrastructure planning, construction, installation and maintenance.</p>
         </div>
       </div>
-      <div className="footer-links" aria-label="Footer navigation">
+      <nav className="footer-links" aria-label="Footer navigation">
         {columns.map(({ title, links }) => (
           <div key={title}>
             <strong>{title}</strong>
@@ -49,7 +49,7 @@ export function Footer() {
             ))}
           </div>
         ))}
-      </div>
+      </nav>
       <div className="footer-meta">
         <span>BUILDING SPACES</span>
         <span>ENHANCING PLAY</span>

@@ -3,11 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arena Grid Infra</title>
+    <title>Arena Grid Infra | Sports Infrastructure</title>
     <meta
       name="description"
       content="Arena Grid Infra builds premium sports infrastructure spaces for institutions, clubs, communities and enterprises."
     />
+    <meta name="theme-color" content="#061812" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=arena-logo-1" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Arena Grid Infra" />
+    <meta property="og:title" content="Arena Grid Infra | Sports Infrastructure" />
+    <meta property="og:description" content="Plan, build and maintain sports spaces for schools, academies, clubs and communities. Start your next project with Arena Grid Infra." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Arena Grid Infra | Sports Infrastructure" />
+    <meta name="twitter:description" content="Plan, build and maintain sports spaces for schools, academies, clubs and communities. Start your next project with Arena Grid Infra." />
+    <script>
+      // Start the homepage image before the application bundle, without fetching it on other routes.
+      if (location.pathname === "/") {
+        const hero = document.createElement("link");
+        hero.rel = "preload";
+        hero.as = "image";
+        hero.type = "image/avif";
+        hero.fetchPriority = "high";
+        hero.imageSizes = "100vw";
+        hero.imageSrcset = matchMedia("(max-width: 640px)").matches
+          ? "/images/home/arena-field-mobile-small.avif 480w, /images/home/arena-field-mobile.avif 768w"
+          : "/images/home/arena-field-medium.avif 1280w, /images/home/arena-field-wide.avif 1920w";
+        document.head.append(hero);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

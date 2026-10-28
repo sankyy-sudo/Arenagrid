@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { ArrowRight, CheckCircle2, MapPin, MessageCircle, Ruler } from "lucide-react";
+import "../styles/contact.css";
 import { ButtonLink } from "../components/ButtonLink";
-import { SectionHeader } from "../components/SectionHeader";
+import { PUBLIC_API_BASE } from "../../services/apiConfig";
 
 export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -8,34 +10,24 @@ export function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
-    <>
-      <section className="inner-hero contact-hero">
-        <div>
-          <span className="eyebrow">Project enquiry</span>
-          <h1>Start a sports infrastructure conversation</h1>
-          <p>Share the site, sport mix, timeline and budget range. The next step should feel clear.</p>
-        </div>
-      </section>
-      <section className="page-shell contact-layout">
-        <div>
-          <SectionHeader
-            eyebrow="Enquiry"
-            title="Tell us what you want to build"
-            copy="The form is wired to the persistent lead endpoint when the API and database are available."
-          />
-          <div className="contact-aside">
-            <strong>Prefer a faster first touch?</strong>
-            <p>Send a WhatsApp message with location, sport and approximate area.</p>
-            <ButtonLink href="https://wa.me/?text=Hello%20Arena%20Grid%20Infra%2C%20I%20want%20to%20discuss%20a%20project." variant="outline">
-              WhatsApp enquiry
-            </ButtonLink>
-          </div>
-        </div>
+    <div className="contact-page home-design">
+     
+      <section className="contact-workspace contact-container" aria-label="Project enquiry">
+        <aside className="contact-guidance">
+          <div className="contact-guide-card"><span className="home-label">A little preparation helps</span><h2>Bring your ideas.{" "}<br />We'll help shape the plan.</h2><p>You don't need every detail figured out. Start with what you know.</p><ul>
+            <li><MapPin size={21} aria-hidden="true" /><div><strong>Your location</strong><span>City, facility type and site details.</span></div></li>
+            <li><Ruler size={21} aria-hidden="true" /><div><strong>Your space</strong><span>Approximate area and the sports you have in mind.</span></div></li>
+            <li><MessageCircle size={21} aria-hidden="true" /><div><strong>Your priorities</strong><span>Timeline, budget range and any site constraints.</span></div></li>
+          </ul></div>
+          <div className="contact-whatsapp"><MessageCircle size={25} aria-hidden="true" /><h2>Prefer WhatsApp?</h2><p>Start a conversation with your location, sport and approximate area.</p><ButtonLink href="https://wa.me/?text=Hello%20Arena%20Grid%20Infra%2C%20I%20want%20to%20discuss%20a%20project." variant="outline">Chat on WhatsApp <ArrowRight size={17} aria-hidden="true" /></ButtonLink></div>
+        </aside>
         {submitted ? (
-          <div className="success-state">Thanks. Your enquiry has been captured for the sales team.</div>
+          <div className="success-state" role="status"><CheckCircle2 size={40} aria-hidden="true" /><h2>Thank you for getting in touch.</h2><p>Your enquiry has been captured for the sales team.</p><ButtonLink href="/products" variant="outline">Explore Surface Systems <ArrowRight size={17} aria-hidden="true" /></ButtonLink></div>
         ) : (
           <form
             className="contact-form"
+            aria-labelledby="enquiry-form-title"
+            aria-busy={isSubmitting}
             onSubmit={async (event) => {
               event.preventDefault();
               setError(null);
@@ -43,7 +35,7 @@ export function ContactPage() {
               const form = new FormData(event.currentTarget);
 
               try {
-                const response = await fetch("/api/leads", {
+                const response = await fetch(`${PUBLIC_API_BASE}/leads`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -77,59 +69,38 @@ export function ContactPage() {
               }
             }}
           >
+            <div className="contact-form-heading"><span className="home-label">Project enquiry</span><h2 id="enquiry-form-title">Tell us what you want to build.</h2></div>
             <div className="form-grid">
               <label>
-                First name
+                Your Name :
                 <input name="firstName" autoComplete="given-name" required minLength={2} />
               </label>
               <label>
-                Email
+                Email :
                 <input name="email" type="email" autoComplete="email" />
               </label>
               <label>
-                Mobile
+                Mobile :
                 <input name="mobile" type="tel" autoComplete="tel" />
               </label>
               <label>
-                Company
-                <input name="company" autoComplete="organization" />
-              </label>
-              <label>
-                City
+                City :
                 <input name="city" autoComplete="address-level2" />
               </label>
-              <label>
-                Project type
-                <select name="projectType">
-                  <option value="">Select</option>
-                  <option>School campus</option>
-                  <option>Sports academy</option>
-                  <option>Residential amenity</option>
-                  <option>Club facility</option>
-                </select>
-              </label>
-              <label>
-                Timeline
-                <select name="timeline">
-                  <option value="">Select</option>
-                  <option>Immediate</option>
-                  <option>1-3 months</option>
-                  <option>3-6 months</option>
-                  <option>Planning stage</option>
-                </select>
-              </label>
+              
+           
             </div>
             <label>
-              Project requirement
-              <textarea name="message" rows={5} placeholder="Sport mix, approximate area, location, timeline or constraints" />
+              Message :
+              <textarea name="message" rows={5} placeholder="write here..." />
             </label>
-            {error ? <div className="form-error">{error}</div> : null}
+            {error ? <div className="form-error" role="alert">{error}</div> : null}
             <button className="primary-action" type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit Enquiry"}
             </button>
           </form>
         )}
       </section>
-    </>
+    </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { adminApi, ApiClientError } from "../api";
+import { adminApi, ApiClientError } from "../services/api";
 import { getResourceDef } from "../resourceConfig";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 function getPath(obj: unknown, path: string): unknown {
   return path.split(".").reduce<unknown>((acc, key) => {
@@ -49,6 +49,7 @@ export function ResourceListPage() {
 
   if (!def) return <Navigate to="/admin" replace />;
   const canWrite = user ? def.roles.write.includes(user.role) : false;
+  const canDelete = user ? def.roles.delete.includes(user.role) : false;
 
   async function handleDelete(id: string) {
     if (!def) return;
@@ -102,7 +103,7 @@ export function ResourceListPage() {
                       {col.key === "status" ? (
                         <StatusBadge status={String(item.status ?? "DRAFT")} />
                       ) : (
-                        renderCell(getPath(item, col.key))
+                        def.key === "projects" && col.key === "progress" ? (item.progress === 100 ? "Completed" : "Ongoing") : renderCell(getPath(item, col.key))
                       )}
                     </td>
                   ))}
@@ -114,7 +115,7 @@ export function ResourceListPage() {
                     >
                       {canWrite ? "Edit" : "View"}
                     </Link>
-                    {canWrite && (
+                    {canDelete && (
                       <button
                         className="admin-btn admin-btn-danger"
                         style={{ padding: "4px 10px" }}

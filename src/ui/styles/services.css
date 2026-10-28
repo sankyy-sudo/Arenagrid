@@ -1,0 +1,44 @@
+.services-container { width: calc(100% - var(--page-pad) * 2); max-width: var(--container); margin-inline: auto; }
+.services-intro { display: grid; grid-template-columns: 1.25fr 0.75fr; align-items: center; gap: clamp(32px, 6vw, 80px); padding-block: 24px 32px; }
+.services-intro h1 { margin: 16px 0 24px; font-size: clamp(2.5rem, 4.5vw, 4.5rem); font-weight: 750; letter-spacing: -0.04em; line-height: 1.08; }
+.services-intro h1 span { color: var(--green-700); }
+.services-intro > div > p { max-width: 600px; margin: 0 0 28px; }
+.services-page p { color: var(--graphite-800); font-size: 1rem; line-height: 1.7; }
+.services-overview { border: 1px solid var(--line); border-radius: 16px; padding: 28px; background: var(--surface); }
+.services-overview ol { margin: 16px 0; padding: 0; list-style: none; }
+.services-overview li { border-bottom: 1px solid var(--line); }
+.services-overview a { display: flex; gap: 16px; align-items: center; padding-block: 16px; min-height: 48px; font-weight: 650; }
+.services-overview a svg { margin-left: auto; color: var(--green-700); }
+.services-overview a:hover { color: var(--green-700); }
+.services-overview > p { margin: 0; font-size: 0.875rem; }
+.services-number { color: var(--green-700); font-size: 0.8125rem; font-weight: 650; }
+.services-list-section { background: var(--surface); padding-block: 40px; }
+.services-section-heading { margin-bottom: 32px; }
+.services-section-heading h2, .services-next h2 { margin: 12px 0 16px; font-size: clamp(2rem, 3.2vw, 3rem); letter-spacing: -0.035em; line-height: 1.15; }
+.services-section-heading p { margin: 0; }
+.services-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.service-card { padding: 28px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); display: flex; flex-direction: column; scroll-margin-top: 104px; box-shadow: var(--shadow-sm); }
+.service-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.service-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 12px; background: var(--green-100); color: var(--green-800); }
+.service-card h3 { font-size: 1.5rem; margin: 10px 0 12px; letter-spacing: -0.025em; }
+.service-card p { margin: 0 0 20px; font-size: 0.9375rem; }
+.service-card ul { padding: 0; list-style: none; margin: 0 0 24px; }
+.service-card li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.875rem; line-height: 1.6; margin-bottom: 10px; }
+.service-card li svg { color: var(--green-700); flex-shrink: 0; margin-top: 3px; }
+.service-card > a { margin-top: auto; align-self: flex-start; }
+.services-help { border-radius: 16px; padding: 32px; background: var(--green-950); color: var(--white); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.services-help .home-label { color: var(--home-accent); }
+.services-help h3 { font-size: clamp(1.75rem, 2.7vw, 2.5rem); letter-spacing: -0.035em; line-height: 1.15; margin: 24px 0 16px; }
+.services-help p { color: var(--line); margin: 0 0 28px; }
+.services-next { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding-block: 40px; }
+.services-next p { margin-bottom: 0; }
+.services-page :is(a, button):focus-visible { outline: 3px solid var(--green-700); outline-offset: 4px; }
+.services-help a:focus-visible { outline-color: var(--white); }
+@media (max-width: 1100px) { .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .services-intro { grid-template-columns: 1fr; padding-block: 24px 32px; } .services-grid { grid-template-columns: 1fr; } .services-list-section { padding-block: 40px; } .service-card, .services-help, .services-overview { padding: 24px; } .services-next { flex-direction: column; align-items: flex-start; padding-block: 40px; } }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .service-card { transition: box-shadow 200ms, border-color 200ms; } .service-card:hover { box-shadow: var(--shadow-md); border-color: var(--green-700); } }
+
+/* Compact spacing between sections; retain original component sizing. */
+.services-intro { padding-block: 24px 16px; }
+.services-list-section { padding-block: 24px; }
+.services-next { padding-block: 24px; }
