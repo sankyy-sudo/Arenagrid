@@ -1,0 +1,46 @@
+/* Shared lower content layout for every catalog detail page. */
+.detail-page.page-shell {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 20px;
+  --detail-accent: #0b4d3a;
+  --detail-tint: #e3efe8;
+  --detail-border: #dfe6e1;
+  --detail-paper: #fff;
+  --detail-ink: var(--ink);
+  --detail-copy: var(--graphite-800);
+}
+.detail-page .detail-content { width: 100%; max-width: none; margin: 0; padding: 0; min-width: 0; text-align: left; color: var(--detail-copy); }
+.detail-page .detail-content-after-gallery { margin-top: 56px; }
+.detail-page .detail-content .prose { width: 100%; max-width: none; color: var(--detail-copy); }
+.detail-content .prose :is(h1,h2,h3,h4,p,ul,ol,li,blockquote) { max-width: none; text-align: left !important; }
+.detail-content :is(h2,h3) { color: var(--detail-ink); }
+.detail-content .prose img { max-width: 100%; height: auto; border-radius: 10px; }
+.detail-content table { display: table; width: 100% !important; border-collapse: collapse; margin: 0; background: var(--detail-paper); color: var(--detail-copy); }
+.detail-content :is(th,td) { padding: 12px 16px; border: 1px solid var(--detail-border); text-align: left !important; vertical-align: top; overflow-wrap: anywhere; }
+.detail-content th { background: var(--detail-tint); color: var(--detail-accent); }
+.detail-content-specifications { margin-top: 32px; }
+.detail-content-specifications h2 { margin: 0 0 18px; font-size: 1.5rem; }
+.detail-content-specifications table { table-layout: fixed; }
+.detail-content-specifications th { width: 30%; }
+.detail-table-scroll { width: 100%; max-width: 100%; overflow-x: auto; }
+.detail-table-scroll:focus-visible { outline: 2px solid var(--detail-accent); outline-offset: 3px; }
+.prose .detail-table-scroll { margin-block: 20px; }
+.detail-content-contact { margin-top: 24px; background: var(--detail-accent); color: var(--detail-paper); }
+.detail-content-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
+.detail-content-actions > a { margin-top: 24px; }
+@media (max-width: 759px) {
+  .detail-page.page-shell { padding-inline: 16px; }
+  .detail-content :is(th,td) { padding: 10px 12px; }
+  .detail-page .detail-content-after-gallery { margin-top: 36px; }
+}
+[data-theme="dark"] .detail-page, .dark .detail-page {
+  --detail-accent: #b8dec9;
+  --detail-tint: #173d30;
+  --detail-border: #315043;
+  --detail-paper: #102a22;
+  --detail-ink: #f1f6f3;
+  --detail-copy: #c4d5cb;
+}

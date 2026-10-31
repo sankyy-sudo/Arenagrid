@@ -45,3 +45,11 @@
 @media (prefers-reduced-motion: reduce) { .product-catalogue *, .product-catalogue *::after { animation: none !important; transition: none !important; scroll-behavior: auto; } .product-learn:hover svg { transform: none; } }
 
 .product-catalogue #catalogue-title { margin: 0; font-size: 1.25rem; }
+
+@media (min-width: 1024px) { .product-catalogue-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.product-catalogue.page-shell { padding-top: 48px; }
+.product-filterbar { position: sticky; top: var(--site-header-height, 82px); z-index: 15; margin-top: 24px; padding-block: 12px; background: var(--white); }
+.product-filterbar .product-filters { margin-top: 0; flex-wrap: nowrap; overflow-x: auto; padding: 4px; }
+.product-filterbar .product-filters button { flex-shrink: 0; }
+.product-filterbar .product-count { margin: 8px 0 0; }

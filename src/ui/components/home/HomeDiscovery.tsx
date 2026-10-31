@@ -1,3 +1,4 @@
+import { richTextToPlain } from "../../../../shared/richText";
 import { useProducts } from "../../hooks/useProducts";
 import { ArrowRight } from "lucide-react";
 import { useSports } from "../../hooks/useSports";
@@ -34,7 +35,7 @@ function HomeProductList() {
   if (!products.length) return <p>Product systems will be listed here when published.</p>;
   return <ol className="home-product-list">{products.map((product, index) => <li key={product.id}>
     <span className="home-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-    <div><span className="home-label">{product.category?.name}</span><h3>{product.name}</h3><p>{product.fullDescription || product.shortDescription}</p></div>
+    <div><span className="home-label">{product.category?.name}</span><h3>{product.name}</h3><p>{richTextToPlain(product.fullDescription || product.shortDescription)}</p></div>
   </li>)}</ol>;
 }
 
@@ -45,7 +46,7 @@ function HomeSportList() {
   if (!sports.length) return <p>Sports will be listed here when published.</p>;
   return <div className="home-sports-grid">{sports.map(sport => <article className="home-sport-card" key={sport.id}>
     <div className="home-sport-card__image"><SportImage key={sport.heroImageUrl} image={sport.heroImageUrl} name={sport.name} /></div>
-    <h3>{sport.name}</h3><p>{sport.longDescription || sport.shortDescription}</p>
+    <h3>{sport.name}</h3><p>{richTextToPlain(sport.longDescription || sport.shortDescription)}</p>
     <a className="home-text-link" href="/contact" aria-label={`Plan your space: ${sport.name}`}>Plan your space <ArrowRight size={16} aria-hidden="true" /></a>
   </article>)}</div>;
 }

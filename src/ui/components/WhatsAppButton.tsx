@@ -6,7 +6,7 @@ export function WhatsAppButton() {
   return (
     <a
       className="whatsapp-button"
-      href={`https://wa.me/?text=${message}`}
+      href={`https://wa.me/919716964745?text=${message}`}
       aria-label="Start a WhatsApp enquiry"
       target="_blank"
       rel="noreferrer"

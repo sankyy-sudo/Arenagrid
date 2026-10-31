@@ -333,13 +333,14 @@ const SALES_ROLES: Role[] = ["SUPER_ADMIN", "SALES_MANAGER", "SALES_USER"];
 
 const leadConfig: ResourceConfig = {
   allowCreate: false,
+  orderBy: { createdAt: "desc" },
   name: "leads",
   module: "leads",
   model: "lead",
   createSchema: v.leadUpdateSchema, // leads are created by the public API, admin only updates them
   updateSchema: v.leadUpdateSchema,
   include: { assignedUser: { select: { id: true, name: true } } },
-  searchFields: ["firstName", "lastName", "company", "email", "mobile"],
+  searchFields: ["firstName", "lastName", "company", "email", "mobile", "city"],
   roles: { read: SALES_ROLES, write: SALES_ROLES, delete: ["SUPER_ADMIN", "SALES_MANAGER"] },
   beforeUpdate: (data) => {
     const { core, relations } = extractRelations(data, ["assignedUserId"]);

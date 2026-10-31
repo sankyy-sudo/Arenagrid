@@ -1,3 +1,4 @@
+import { sanitizeStoredContent, richTextToPlain } from "./richText";
 import { z } from "zod";
 
 export const slugSchema = z
@@ -39,6 +40,7 @@ export const leadCreateSchema = z.object({
 export const publishStatusSchema = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]);
 const idArray = z.array(z.string()).optional();
 const optionalId = z.string().nullable().optional();
+const richText = (max = 100000) => z.string().max(200000).transform(sanitizeStoredContent).refine(value => richTextToPlain(value).length <= max, `Content must be at most ${max} characters.`);
 const shortText = (max: number) => z.string().max(max).optional();
 
 // Accept local media paths or explicit HTTP(S) URLs; allow clearing an image.
@@ -52,8 +54,8 @@ export const productImageSchema = z.string().max(2000).refine(value => {
 export const productCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
-  shortDescription: z.string().max(300).nullish(),
-  fullDescription: z.string().nullish(),
+  shortDescription: richText(300).nullish(),
+  fullDescription: richText().nullish(),
   categoryId: optionalId,
   mainImageUrl: productImageSchema,
   features: z.array(z.string().trim().min(1).max(400)).max(20).optional(),
@@ -80,7 +82,7 @@ export const productUpdateSchema = productCreateSchema.partial().extend({
 export const productCategoryCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
-  description: shortText(500),
+  description: richText(500).optional(),
   status: publishStatusSchema.default("DRAFT")
 });
 export const productCategoryUpdateSchema = productCategoryCreateSchema.partial().extend({ status: publishStatusSchema.optional() });
@@ -88,8 +90,8 @@ export const productCategoryUpdateSchema = productCategoryCreateSchema.partial()
 export const sportCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
-  shortDescription: shortText(300),
-  longDescription: z.string().nullish(),
+  shortDescription: richText(300).optional(),
+  longDescription: richText().nullish(),
   heroImageUrl: productImageSchema,
   status: publishStatusSchema.default("DRAFT"),
   productIds: idArray,
@@ -101,8 +103,8 @@ export const serviceCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
   category: shortText(120),
-  shortDescription: shortText(300),
-  fullDescription: z.string().optional(),
+  shortDescription: richText(300).optional(),
+  fullDescription: richText().optional(),
   status: publishStatusSchema.default("DRAFT"),
   productIds: idArray,
   sportIds: idArray,
@@ -113,9 +115,9 @@ export const serviceUpdateSchema = serviceCreateSchema.partial().extend({ status
 export const industryCreateSchema = z.object({
   name: z.string().min(2).max(160),
   slug: slugSchema,
-  description: z.string().max(10000).nullish(),
+  description: richText(10000).nullish(),
   imageUrl: productImageSchema,
-  solution: z.string().max(10000).nullish(),
+  solution: richText(10000).nullish(),
   status: publishStatusSchema.default("DRAFT"),
   serviceIds: idArray
 });
@@ -130,15 +132,17 @@ export const projectCreateSchema = z.object({
   state: shortText(80),
   country: shortText(80),
   projectType: shortText(80),
+  surface: z.string().trim().max(160).nullish(),
+  use: z.string().trim().max(160).nullish(),
   area: shortText(80),
   completionDate: z.string().datetime().optional(),
-  description: z.string().nullish(),
+  description: richText().nullish(),
   beforeImageUrl: productImageSchema,
   afterImageUrl: productImageSchema,
   progress: z.union([z.literal(0), z.literal(100)]).optional(),
-  challenge: z.string().optional(),
-  solution: z.string().optional(),
-  outcome: z.string().optional(),
+  challenge: richText().optional(),
+  solution: richText().optional(),
+  outcome: richText().optional(),
   status: publishStatusSchema.default("DRAFT"),
   sportIds: idArray,
   productIds: idArray,
@@ -152,11 +156,11 @@ export const caseStudyCreateSchema = z.object({
   title: z.string().min(2).max(200),
   slug: slugSchema,
   client: shortText(160),
-  challenge: z.string().optional(),
-  requirement: z.string().optional(),
-  solution: z.string().optional(),
-  implementation: z.string().optional(),
-  outcome: z.string().optional(),
+  challenge: richText().optional(),
+  requirement: richText().optional(),
+  solution: richText().optional(),
+  implementation: richText().optional(),
+  outcome: richText().optional(),
   projectId: optionalId,
   status: publishStatusSchema.default("DRAFT"),
   productIds: idArray,
@@ -168,8 +172,8 @@ export const caseStudyUpdateSchema = caseStudyCreateSchema.partial().extend({ st
 export const blogPostCreateSchema = z.object({
   title: z.string().min(2).max(200),
   slug: slugSchema,
-  excerpt: shortText(400),
-  content: z.string().optional(),
+  excerpt: richText(400).optional(),
+  content: richText().optional(),
   category: shortText(120),
   tags: shortText(300),
   publishedAt: z.string().datetime().optional(),
@@ -181,7 +185,7 @@ export const blogPostUpdateSchema = blogPostCreateSchema.partial().extend({ stat
 
 export const faqCreateSchema = z.object({
   question: z.string().min(2).max(300),
-  answer: z.string().min(2),
+  answer: richText().refine(value => richTextToPlain(value).trim().length >= 2, "Enter at least two characters."),
   category: shortText(120),
   order: z.number().int().default(0),
   status: publishStatusSchema.default("DRAFT"),
@@ -197,7 +201,7 @@ export const faqUpdateSchema = faqCreateSchema.partial().extend({
 export const pageCreateSchema = z.object({
   title: z.string().min(2).max(200),
   slug: slugSchema,
-  content: z.string().optional(),
+  content: richText().optional(),
   blocks: z.string().optional(),
   status: publishStatusSchema.default("DRAFT")
 });

@@ -1,17 +1,18 @@
+import { CardGrid } from "./CardGrid";
+import { cardSummary } from "../data/cardContent";
+import { InfoCard } from "./InfoCard";
+import { detailHref } from "../data/catalog";
 import { useState } from "react";
-import { ArrowRight, Search, Trophy } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { useSports } from "../hooks/useSports";
 import type { PublicSport } from "../../../shared/sports";
-import { SportImage } from "./SportImage";
 import { ButtonLink } from "./ButtonLink";
 import { HomePhoto } from "./home/HomePhoto";
-import { useHomeMotion } from "../hooks/useHomeMotion";
 import "../styles/sports.css";
 
 function SportsGrid({ query, sports }: { query: string; sports: PublicSport[] }) {
-  const motionRef = useHomeMotion();
   const matches = sports.filter(sport => `${sport.name} ${sport.longDescription || sport.shortDescription || ""}`.toLowerCase().includes(query.trim().toLowerCase()));
-  return <><p className="sports-count" role="status">{matches.length} {matches.length === 1 ? "sport or space" : "sports and spaces"}</p><div className="sports-grid" ref={motionRef} data-reveal-group>{matches.map(sport => <article className="sport-solution" key={sport.id} data-reveal><SportImage key={sport.heroImageUrl} image={sport.heroImageUrl} name={sport.name} /><div className="sport-solution-top"><span className="sport-solution-icon"><Trophy size={24} aria-hidden="true" /></span><span className="home-label">Sports infrastructure</span></div><h3>{sport.name}</h3><p style={{ whiteSpace: "pre-line" }}>{sport.longDescription || sport.shortDescription}</p><a className="home-text-link" href="/contact" aria-label={`Discuss ${sport.name}`}>Plan your space <ArrowRight size={17} aria-hidden="true" /></a></article>)}</div>{matches.length === 0 && <div className="sports-empty"><h3>No matching sports found.</h3><p>Try another sport name, or tell us about your facility.</p><ButtonLink href="/contact" variant="outline">Discuss Your Requirements</ButtonLink></div>}</>;
+  return <><p className="sports-count" role="status">{matches.length} {matches.length === 1 ? "sport or space" : "sports and spaces"}</p><CardGrid className="sports-grid compact-catalog-grid">{matches.map(sport => <InfoCard key={sport.id} to={detailHref("sports", sport)} title={sport.name} shortDescription={cardSummary({ ...sport, description: sport.longDescription })} image={sport.heroImageUrl} category="Sports infrastructure" className="sport-solution" />)}</CardGrid>{matches.length === 0 && <div className="sports-empty"><h3>No matching sports found.</h3><p>Try another sport name, or tell us about your facility.</p><ButtonLink href="/contact" variant="outline">Discuss Your Requirements</ButtonLink></div>}</>;
 }
 
 export function SportsContent() {

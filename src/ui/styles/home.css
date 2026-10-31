@@ -342,3 +342,8 @@ body:has(.home-hero) {
     transform: none;
   }
 }
+
+/* Keep sticky filters aligned with the measured, compact header. */
+.site-header.site-header--shared { transition: padding 180ms ease, min-height 180ms ease; }
+.site-header.site-header--shared.is-compact { min-height: 66px; padding-block: 6px; }
+@media (prefers-reduced-motion: reduce) { .site-header.site-header--shared { transition: none; } }

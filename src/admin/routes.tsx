@@ -13,7 +13,6 @@ export const adminRoutes: RouteObject[] = [
           { index: true, lazy: async () => ({ Component: (await import("./pages/DashboardPage")).DashboardPage }) },
           { path: "leads", lazy: async () => ({ Component: (await import("./pages/LeadsPage")).LeadsPage }) },
           { path: "media", lazy: async () => ({ Component: (await import("./pages/MediaLibraryPage")).MediaLibraryPage }) },
-          { path: "users", lazy: async () => ({ Component: (await import("./pages/UsersPage")).UsersPage }) },
           { path: ":resourceKey", lazy: async () => ({ Component: (await import("./pages/ResourceListPage")).ResourceListPage }) },
           { path: ":resourceKey/:id", lazy: async () => ({ Component: (await import("./pages/ResourceFormPage")).ResourceFormPage }) }
         ]

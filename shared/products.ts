@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const publicProductSchema = z.object({
+  gallery: z.array(z.object({ url: z.string(), altText: z.string().nullable() })).optional(),
   id: z.string(), name: z.string(), slug: z.string(),
   shortDescription: z.string().nullable(), fullDescription: z.string().nullable(),
   mainImageUrl: z.string().nullable(),

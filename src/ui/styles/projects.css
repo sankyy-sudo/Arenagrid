@@ -16,3 +16,51 @@
 .project-description { white-space: pre-line; overflow-wrap: anywhere; }
 .project-progress { margin-top: 24px; }
 @media (max-width: 600px) { .project-comparison { grid-template-columns: 1fr; } }
+
+/* Compact listing cards use their own class to avoid legacy project-card rules. */
+.projects-empty {
+  --project-green: #0b4d3a;
+  --project-tint: #e3efe8;
+  --project-card-bg: #fff;
+  --project-border: #dfe6e1;
+  --project-text: var(--ink);
+  --project-muted: var(--graphite-800);
+  padding-bottom: 112px;
+  padding-right: max(var(--page-pad), 100px);
+}
+.projects-list.catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.projects-list .project-list-card { border-radius: 14px; border-color: var(--project-border); background: var(--project-card-bg); box-shadow: 0 2px 8px rgb(11 77 58 / 6%); text-align: left; }
+.project-list-card .info-card-image { aspect-ratio: 16 / 9; padding: 0; }
+.project-list-card .info-card-image::after { display: none; }
+.project-list-card .info-card-badge, .project-list-card .info-card-secondary-badge { position: absolute; top: 10px; padding: 5px 9px; border-radius: 999px; background: var(--project-tint); color: var(--project-green); font-size: 10px; font-weight: 700; line-height: 1.4; letter-spacing: .04em; text-transform: uppercase; z-index: 1; }
+.project-list-card .info-card-badge { left: 10px; max-width: calc(100% - 85px); }
+.project-list-card .info-card-secondary-badge { right: 10px; }
+.project-list-card .info-card-body { padding: 14px 16px; }
+.project-list-card .info-card-title { display: block; font-size: 17px; line-height: 1.4; min-height: 1.4em; margin: 0 0 8px; white-space: nowrap; text-overflow: ellipsis; color: var(--project-text); }
+.project-list-card .info-card-description { line-height: 1.5; min-height: 3em; margin: 0 0 12px; color: var(--project-muted); }
+.project-list-card .info-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
+.project-list-card .info-card-tags { min-width: 0; min-height: 0; margin: 0; }
+.project-list-card .info-card-tags li { padding: 4px 8px; background: var(--project-tint); color: var(--project-green); }
+.project-list-card .info-card-affordance { flex-shrink: 0; font-size: 12px; gap: 4px; color: var(--project-green); }
+.projects-list .quote-grid-card { padding: 20px; }
+.projects-list .quote-grid-card h3 { font-size: 20px; margin: 8px 0; }
+.projects-list .quote-grid-card p { margin-bottom: 12px; color: var(--white); font-size: 14px; }
+body:has(.projects-list) .whatsapp-button { right: 28px; bottom: calc(32px + env(safe-area-inset-bottom)); z-index: 30; }
+@media (max-width: 1023px) {
+  .projects-list.catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .projects-empty { padding-right: var(--page-pad); }
+  .projects-list.catalog-grid { grid-template-columns: minmax(0, 1fr); }
+  /* Reserve a rail so the floating button cannot cover card content while scrolling. */
+  body:has(.projects-list) .whatsapp-button { right: 8px; width: 44px; height: 44px; }
+  .projects-empty:has(.projects-list) { padding-right: 64px; }
+}
+[data-theme="dark"] .projects-empty, .dark .projects-empty {
+  --project-green: #b8dec9;
+  --project-tint: #173d30;
+  --project-card-bg: #102a22;
+  --project-border: #315043;
+  --project-text: #f1f6f3;
+  --project-muted: #c4d5cb;
+}

@@ -5,6 +5,7 @@ export const publishedProductsQuery = {
   where: { status: "PUBLISHED" },
   orderBy: [{ name: "asc" }, { id: "asc" }],
   select: {
+    gallery: { select: { url: true, altText: true }, orderBy: { id: "asc" } },
     id: true, name: true, slug: true, shortDescription: true, fullDescription: true, mainImageUrl: true, features: true, bestFor: true,
     category: { select: { id: true, name: true, slug: true, status: true } },
     specifications: { orderBy: [{ order: "asc" }, { id: "asc" }], select: { name: true, value: true, unit: true } },

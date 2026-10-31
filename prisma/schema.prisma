@@ -201,6 +201,8 @@ model Project {
   state       String?
   country     String?
   projectType String?
+  surface     String?
+  use         String?
   area        String?
   completionDate DateTime?
   beforeImageUrl String?

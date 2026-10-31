@@ -1,3 +1,4 @@
+import { RichTextContent } from "./RichTextContent";
 import { ChevronDown } from "lucide-react";
 
 const faqs = [
@@ -26,7 +27,7 @@ export function FAQAccordion({ items = faqs }: { items?: readonly FAQItem[] }) {
             {faq.question}
             <ChevronDown size={18} aria-hidden="true" />
           </summary>
-          <p>{faq.answer}</p>
+          <RichTextContent content={faq.answer} />
         </details>
       ))}
     </div>

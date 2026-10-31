@@ -1,3 +1,5 @@
+import "./ui/styles/rich-text.css";
+import { DetailPage } from "./ui/pages/DetailPage";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -26,6 +28,10 @@ const router = createBrowserRouter([
       { path: "case-studies", element: <ListingPage title="Case Studies" kind="Outcomes" /> },
       { path: "blog", element: <ListingPage title="Blog & News" kind="Insights" /> },
       { path: "gallery", element: <ListingPage title="Gallery" kind="Media library" /> },
+      { path: "products/:slug", element: <DetailPage section="products" /> },
+      { path: "sports/:slug", element: <DetailPage section="sports" /> },
+      { path: "industries/:slug", element: <DetailPage section="industries" /> },
+      { path: "projects/:slug", element: <DetailPage section="projects" /> },
       { path: "contact", element: <ContactPage /> }
     ]
   },

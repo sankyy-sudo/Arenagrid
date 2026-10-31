@@ -16,15 +16,26 @@ const navItems = [
 export function Header() {
   const [isCompact, setIsCompact] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const brandRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const measure = () => document.documentElement.style.setProperty("--site-header-height", `${header.getBoundingClientRect().height}px`);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     let compact: boolean | undefined;
     const onScroll = () => {
-      const next = window.scrollY > 24;
+      const next = window.scrollY > 50;
       if (next !== compact) {
         compact = next;
         setIsCompact(next);
@@ -67,7 +78,7 @@ export function Header() {
   }
 
   return (
-    <header className={`site-header site-header--shared ${isCompact ? "is-compact" : ""}`}>
+    <header ref={headerRef} className={`site-header site-header--shared ${isCompact ? "is-compact" : ""}`}>
       <Link ref={brandRef} className="brand" to="/" title="Arena Grid Infra home">
         <BrandMark />
         <span>
@@ -85,7 +96,7 @@ export function Header() {
         <NavLink to="/projects">Projects</NavLink>
       </nav>
       <Link className="quote-button" to="/contact">
-        contact us
+        Contact Us
       </Link>
       
       <button

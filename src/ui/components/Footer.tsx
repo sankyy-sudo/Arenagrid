@@ -22,7 +22,7 @@ export function Footer() {
       title: "Contact",
       links: [
         ["Get Quote", "/contact"],
-        ["WhatsApp", "https://wa.me/?text=Hello%20Arena%20Grid%20Infra%2C%20I%20want%20to%20discuss%20a%20project."],
+        ["WhatsApp", "https://wa.me/919716964745?text=Hello%20Arena%20Grid%20Infra%2C%20I%20want%20to%20discuss%20a%20project."],
         ["Project Enquiry", "/contact"],
         ["Support", "/contact"]
       ]

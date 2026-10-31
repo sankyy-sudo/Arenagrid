@@ -1,6 +1,9 @@
+import { CardGrid } from "./CardGrid";
+import { cardSummary } from "../data/cardContent";
+import { InfoCard } from "./InfoCard";
+import { detailHref } from "../data/catalog";
 import { ArrowRight } from "lucide-react";
 import { useIndustries } from "../hooks/useIndustries";
-import { IndustryImage } from "./IndustryImage";
 import type { PublicIndustry } from "../../../shared/industries";
 import { ButtonLink } from "./ButtonLink";
 import { SectionHeader } from "./SectionHeader";
@@ -9,14 +12,7 @@ import { useHomeMotion } from "../hooks/useHomeMotion";
 import "../styles/industries.css";
 
 function IndustryGrid({ industries }: { industries: PublicIndustry[] }) {
-  const motionRef = useHomeMotion();
-  return <div className="industries-grid" ref={motionRef} data-reveal-group>{industries.map(industry => <article className="industry-card" key={industry.id} data-reveal>
-    <IndustryImage key={industry.imageUrl} image={industry.imageUrl} name={industry.name} />
-    <h3>{industry.name}</h3>
-    {industry.description && <p className="industry-copy">{industry.description}</p>}
-    {industry.solution && <div className="industry-solution"><h4>Solution</h4><p className="industry-copy">{industry.solution}</p></div>}
-    <a className="home-text-link" href="/contact" aria-label={`Discuss a project for ${industry.name}`}>Discuss your project <ArrowRight size={17} aria-hidden="true" /></a>
-  </article>)}</div>;
+  return <CardGrid className="industries-grid compact-catalog-grid">{industries.map(industry => <InfoCard key={industry.id} to={detailHref("industries", industry)} title={industry.name} shortDescription={cardSummary(industry)} image={industry.imageUrl} category="Industry solutions" className="industry-card" />)}</CardGrid>;
 }
 
 export function IndustriesContent() {

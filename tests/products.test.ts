@@ -15,7 +15,7 @@ test("product image fields accept uploads and safe URLs, reject unsafe schemes, 
 });
 
 test("public product projection excludes unpublished category metadata", () => {
-  const row = { id: "one", name: "Turf", slug: "turf", shortDescription: null, fullDescription: null, mainImageUrl: null, features: [], bestFor: [], sports: [], specifications: [], category: { id: "category", name: "Surfaces", slug: "surfaces", status: "DRAFT" as const } };
+  const row = { gallery: [], id: "one", name: "Turf", slug: "turf", shortDescription: null, fullDescription: null, mainImageUrl: null, features: [], bestFor: [], sports: [], specifications: [], category: { id: "category", name: "Surfaces", slug: "surfaces", status: "DRAFT" as const } };
   assert.equal(publicProduct(row).category, null);
   assert.deepEqual(publicProduct({ ...row, category: { ...row.category, status: "PUBLISHED" } }).category, { id: "category", name: "Surfaces", slug: "surfaces" });
 });

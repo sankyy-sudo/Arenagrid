@@ -6,7 +6,6 @@ const EXTRA_LINKS = [
   { to: "/admin", label: "Dashboard", end: true, roles: undefined as string[] | undefined },
   { to: "/admin/leads", label: "Leads", roles: ["SUPER_ADMIN", "SALES_MANAGER", "SALES_USER"] },
   { to: "/admin/media", label: "Media Library", roles: undefined },
-  { to: "/admin/users", label: "Users", roles: ["SUPER_ADMIN"] }
 ];
 
 export function AdminLayout() {

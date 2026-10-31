@@ -9,6 +9,10 @@ export const publicRoutes = [
   "/case-studies",
   "/blog",
   "/gallery",
+  "/products/:slug",
+  "/sports/:slug",
+  "/industries/:slug",
+  "/projects/:slug",
   "/contact"
 ] as const;
 

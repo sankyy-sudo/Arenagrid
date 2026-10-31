@@ -121,6 +121,10 @@ test("product admin CRUD drives the published public list (database adapter mock
   assert.equal((await save("POST", { name: "Draft turf", slug: "draft-turf", mainImageUrl: "/uploads/turf.webp" }, "/api/admin/products")).status, 201);
   assert.deepEqual(await list(), []);
   assert.equal((await save("PUT", { status: "PUBLISHED", shortDescription: "Published copy", features: ["UV resistant"], bestFor: ["School grounds"] })).status, 200);
+  assert.equal((await save("PUT", { fullDescription: '<h2>Surface</h2><p onclick="bad()"><strong>Formatted</strong></p><script>bad()</script>' })).status, 200);
+  assert.equal((await list())[0].fullDescription, '<h2>Surface</h2><p><strong>Formatted</strong></p>');
+  const editedRecord = await fetch(`${base}/api/admin/products/created-product`, { headers });
+  assert.equal((await editedRecord.json()).item.fullDescription, '<h2>Surface</h2><p><strong>Formatted</strong></p>');
   let visible = await list(); assert.equal(visible.length, 1); assert.equal(visible[0].category, null); assert.equal(visible[0].mainImageUrl, "/uploads/turf.webp");
   assert.deepEqual(visible[0].features, ["UV resistant"]); assert.deepEqual(visible[0].bestFor, ["School grounds"]);
   assert.equal((await save("PUT", { name: "Updated turf", mainImageUrl: null, features: [], bestFor: [] })).status, 200);
@@ -248,3 +252,55 @@ test("industry CRUD publishes edited content and respects permissions (database 
   assert.deepEqual(await list(), []);
 });
 
+
+test("contact submission appears in authorized admin leads with all form details (database adapter mocked)", async (t) => {
+  function stub(target: object, key: string, replacement: unknown) {
+    const delegate = target as Record<string, unknown>; const previous = delegate[key];
+    delegate[key] = replacement; t.after(() => { delegate[key] = previous; });
+  }
+  let stored: Record<string, unknown> | undefined;
+  let role = "SUPER_ADMIN";
+  stub(prisma.lead, "create", async ({ data }: { data: Record<string, unknown> }) => {
+    stored = { ...data, id: "contact-lead", status: "NEW", createdAt: new Date().toISOString() }; return stored;
+  });
+  stub(prisma.lead, "findMany", async (query: { orderBy: unknown }) => {
+    assert.deepEqual(query.orderBy, { createdAt: "desc" }); return stored ? [stored] : [];
+  });
+  stub(prisma.user, "findUnique", async () => ({ id: "leads-admin", role, isActive: true }));
+  const submission = { type: "Contact Us", firstName: "Test Visitor", email: "visitor@example.com", mobile: "9000000000", city: "Delhi", message: "Please discuss a tennis court", attribution: { landingPage: "/contact" } };
+  const response = await fetch(`${base}/api/leads`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(submission) });
+  assert.equal(response.status, 201); assert.deepEqual(await response.json(), { id: "contact-lead", status: "NEW" });
+  const token = signSession({ sub: "leads-admin", role: "SUPER_ADMIN" });
+  const headers = { Cookie: `agi_session=${token}` };
+  const listing = await fetch(`${base}/api/admin/leads`, { headers }); assert.equal(listing.status, 200);
+  const { items } = await listing.json(); assert.equal(items.length, 1);
+  for (const field of ["firstName", "email", "mobile", "city", "message", "type"] as const) assert.equal(items[0][field], submission[field]);
+  assert.equal(items[0].status, "NEW"); assert.equal(JSON.parse(items[0].attributionJson).landingPage, "/contact");
+  role = "EDITOR"; assert.equal((await fetch(`${base}/api/admin/leads`, { headers })).status, 403);
+  assert.equal((await fetch(`${base}/api/admin/leads`)).status, 401);
+});
+
+test("lead deletion requires authorized role and CSRF, deletes once and audits (database mocked)", async (t) => {
+  function stub(target: object, key: string, replacement: unknown) {
+    const delegate = target as Record<string, unknown>; const previous = delegate[key];
+    delegate[key] = replacement; t.after(() => { delegate[key] = previous; });
+  }
+  let role = "SALES_USER";
+  let exists = true;
+  let deleted = 0;
+  let audits = 0;
+  stub(prisma.user, "findUnique", async () => ({ id: "lead-delete-admin", role, isActive: true }));
+  stub(prisma.lead, "findUnique", async () => exists ? { id: "delete-fixture", firstName: "Test" } : null);
+  stub(prisma.lead, "delete", async () => { exists = false; deleted++; return { id: "delete-fixture" }; });
+  stub(prisma.activityLog, "create", async () => { audits++; return {}; });
+  const token = signSession({ sub: "lead-delete-admin", role: "SUPER_ADMIN" });
+  const headers = { Cookie: `agi_session=${token}; agi_csrf=delete-csrf`, "X-CSRF-Token": "delete-csrf" };
+  const remove = () => fetch(`${base}/api/admin/leads/delete-fixture`, { method: "DELETE", headers });
+  assert.equal((await remove()).status, 403); assert.equal(deleted, 0);
+  role = "SUPER_ADMIN";
+  assert.equal((await fetch(`${base}/api/admin/leads/delete-fixture`, { method: "DELETE", headers: { Cookie: headers.Cookie } })).status, 403);
+  assert.equal((await remove()).status, 204); assert.equal(deleted, 1); assert.equal(audits, 1);
+  assert.equal((await remove()).status, 404); assert.equal(deleted, 1);
+  role = "SALES_MANAGER"; exists = true;
+  assert.equal((await remove()).status, 204); assert.equal(audits, 2);
+});

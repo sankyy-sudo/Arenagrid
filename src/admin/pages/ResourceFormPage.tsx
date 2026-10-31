@@ -1,3 +1,5 @@
+import { RichTextEditor } from "../components/RichTextEditor";
+import { richTextToPlain } from "../../../shared/richText";
 import { ImageField } from "../components/ImageField";
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
@@ -125,6 +127,12 @@ function ResourceForm() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!def || mediaBusy || saving) return;
+    const missingContent = def.fields.find(field => field.type === "textarea" && field.required && !richTextToPlain(String(values[field.key] ?? "")).trim());
+    if (missingContent) {
+      setError(`${missingContent.label} is required.`);
+      document.getElementById(`field-${missingContent.key}`)?.focus();
+      return;
+    }
     setSaved(false);
     setSaving(true);
     setError(null);
@@ -350,13 +358,7 @@ function FieldInput({
     return (
       <div className="admin-form-row">
         <label htmlFor={id}>{field.label}</label>
-        <textarea
-          id={id}
-          className="admin-textarea"
-          disabled={disabled}
-          value={typeof value === "string" ? value : ""}
-          onChange={(e) => onChange(e.target.value)}
-        />
+        <RichTextEditor id={id} label={field.label} value={typeof value === "string" ? value : ""} onChange={onChange} disabled={disabled} required={field.required} />
       </div>
     );
   }

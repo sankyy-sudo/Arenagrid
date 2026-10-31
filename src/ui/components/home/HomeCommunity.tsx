@@ -1,3 +1,4 @@
+import { RichTextContent } from "../RichTextContent";
 import { ArrowRight, Plus, Building2 } from "lucide-react";
 import { useIndustries } from "../../hooks/useIndustries";
 import { SectionHeader } from "../SectionHeader";
@@ -30,7 +31,7 @@ function HomeIndustryList() {
   if (!industries.length) return <p>Industries will be listed here when published.</p>;
   return <div className="home-industry-list">{industries.map(industry => <details key={industry.id}>
     <summary><span aria-hidden="true"><Building2 size={19} /></span><span>{industry.name}</span><Plus size={16} aria-hidden="true" /></summary>
-    {industry.description && <p>{industry.description}</p>}
-    {industry.solution && <p><strong>Solution: </strong>{industry.solution}</p>}
+    {industry.description && <RichTextContent content={industry.description} />}
+    {industry.solution && <div><strong>Solution: </strong><RichTextContent content={industry.solution} /></div>}
   </details>)}</div>;
 }
